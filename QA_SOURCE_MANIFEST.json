@@ -13,7 +13,7 @@
     "factoryax/verify.py": "82289a2834bc4e0232774030822c00c5e00ff96c11ffc3a84b684ac33ddb370e",
     "scripts/build_candidate.py": "252f235df40247b1042740c1162c8d386ca5380f08a9d9ed396cb9d21cf6ccf9",
     "scripts/gui_smoke.py": "349898653717a683f16bb2bd544443e87a3437f87f23f62cf327fff8312eb8d7",
-    "scripts/owner_windows_qa.py": "57e2e5dc751844c8ac014b084c07516fa0d643703972d279d13d4e484e95e53f",
+    "scripts/owner_windows_qa.py": "c1d9581d645e5b72518b7ee94572e5f16f9f00fd10db68f7d4d432e5a96b09c7",
     "tests/test_backup.py": "6cd3d7a23b35a350db9eebf6faa783c098f9242945ee9a7a30b1179394753591",
     "tests/test_delivery.py": "46bdba65c0373c83cc37f534c4d5395a5cda2ac1a4965a71e0d49a4b25033969",
     "tests/test_malformed_rejection.py": "d346165f9be7489cf46f0c561671fa0861bb22743d00450d51ab6daafa5d6d85",

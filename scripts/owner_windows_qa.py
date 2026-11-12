@@ -20,7 +20,9 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_MANIFEST = ROOT / 'QA_SOURCE_MANIFEST.json'
-STEPS = ('source_manifest', 'compile', 'regression', 'synthetic', 'report',
+TEST_FILES = ('test_verify.py','test_reconciliation.py','test_delivery.py','test_backup.py',
+              'test_profile_contract.py','test_malformed_rejection.py','test_owner_windows_qa.py')
+STEPS = ('source_manifest', 'compile', *(f'regression_{f[:-3]}' for f in TEST_FILES), 'synthetic', 'report',
          'report_verify', 'backup', 'restore', 'restore_verify', 'package',
          'package_verify', 'native_cmd_ok', 'native_cmd_blocked',
          'original_input_unchanged', 'native_tk_gui')
@@ -63,7 +65,7 @@ def check_run(argv: list[str], name: str, checks: list[dict], *, expected: int =
     rec = {'step': name, 'status': 'PASS' if run.returncode == expected else 'FAIL',
            'exit_code': run.returncode, 'expected_exit_code': expected,
            'elapsed_seconds': round(time.monotonic()-start, 2)}
-    if name == 'regression':
+    if name.startswith('regression_'):
         m = re.search(r'Ran (\d+) tests?', run.stdout+'\n'+run.stderr)
         if m:
             rec['tests_run'] = int(m.group(1))
@@ -103,7 +105,9 @@ def native_qa() -> tuple[int, dict]:
             package = work / '한글_검수_패키지'
             py = sys.executable
             check_run([py,'-m','compileall','-q','factoryax','tests','scripts','examples'], 'compile', checks)
-            check_run([py,'-m','unittest','discover','-s','tests','-q'], 'regression', checks)
+            for test_file in TEST_FILES:
+                check_run([py,'-m','unittest','discover','-s','tests','-p',test_file,'-q'],
+                          'regression_'+test_file[:-3], checks, timeout=90)
             check_run([py,str(ROOT/'examples/make_reconcile_synthetic.py'),str(demo)], 'synthetic', checks)
             original={str(p.relative_to(demo)): _sha(p) for p in (demo/'input').iterdir() if p.is_file()}
             if len(original) != 4:
