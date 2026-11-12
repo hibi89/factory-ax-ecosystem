@@ -1,3 +1,15 @@
+# 2026-11-12 KST — Factory auto-Linux CI proven; Windows 85 gate unresolved (10-point)
+1. **Goal:** User requested minimize manual CI; W1 VERIFY 85 target, 82% provisional, whole Factory ecosystem UNASSESSED.
+2. **Work/choice:** Adapted existing manual QA workflow with path-filtered `push` for feature branch; dynamic matrix Linux-only on push and Linux+Windows for manual dispatch. Preserved branch guards, read-only token, 12-minute job cap, cancellation. Safer/cheaper than Windows on every push; does NOT guarantee zero GitHub private Actions charge.
+3. **Verification:** GitHub [auto push run 43175793749](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43175793749) **SUCCESS** on exact workflow SHA `067139c6b9b657b3f04fc622550081ec8f22d37c`: Python3.11 Ubuntu 134 isolated PASS, compile, package integrity, synthetic report→backup→restore, Xvfb GUI PASS. Previous hosted Windows job [43173438702](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43173438702) FAILED first backup suite (15 found); later Windows steps skipped. Windows fix verification NOT RUN.
+4. **Status:** W1 VERIFY 82% provisional, 85% unaccepted, RELEASE HOLD. Whole Factory AX Ecosystem percentage unassessed and W2–W4 not built.
+5. **Issue/root/pivot:** Prior setup was `workflow_dispatch` only, unlike PayPal/KIC/UGREEN push CI. Trigger mismatch, not lack of AI coding rights. Auto Linux now proven; Windows remains manual due unknown private paid-usage limit. Actual Windows test cause not yet isolated because old CI withheld stderr; updated runner prints errors at new SHA.
+6. **Repo/branch/SHA:** Private `hibi89/factory-ax-ecosystem@feature/data-verify`, auto workflow functional commit `067139c6b9b657b3f04fc622550081ec8f22d37c`. New docs HEAD to be verified. `main` unchanged. `.github/workflows/verify-owner-qa.yml` only modified functional file; docs/Status/Handoff additional. Rollback via git revert, no force.
+7. **Runtime:** Python3.11 GitHub Ubuntu runner, synthetic/no customer files, 12-min max; local Python3.11+ stdlib + Tk optional; Vercel/production N/A.
+8. **Original/backups/security:** No PREP/EAI/SMAX/HAE repositories changed. No real customer files, tokens or explicit pay/permissions/security settings changed. Do not assume private CI free beyond allowance. Source history recoverable.
+9. **Next:** With budget controls checked, enable Windows auto CI only if expressly authorized, or use newer manual dispatch once; obtain Windows stderr and minimally fix, run Windows CMD/GUI/integrity test, assess native 85 acceptance. Do not repeat Linux test work unnecessarily.
+10. **Checked:** 2026-11-12 KST, GitHub actual auto run and job status verified; native Windows rerun and buyer hardware NOT VERIFIED.
+
 # 2026-11-12 KST — First hosted Windows QA failure and exact recovery checkpoint
 1. **Scope:** Factory AX W1 VERIFY 85% target; 82% provisional, not overall Factory ecosystem.
 2. **Changes:** No business/product code changed. First real hosted CI failure inspected. Add bounded failure stderr logging to `scripts/run_ci_regressions.py` to reveal Windows regression traceback next run; no swallowed failures.
