@@ -2,6 +2,7 @@ import csv
 import io
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -111,7 +112,10 @@ class VerifyTest(unittest.TestCase):
 
     def test_absolute_denied(self):
         self.spec['files']['shipment']['path'] = str(self.root / 'shipment.csv')
-        with self.assertRaisesRegex(IntakeError, 'PATH_OUTSIDE_APPROVED_ROOT'):
+        # Native Windows absolute paths contain backslashes and are rejected
+        # as PATH_INVALID before absolute-path detection. Both are fail-closed.
+        denial = 'PATH_INVALID' if os.name == 'nt' else 'PATH_OUTSIDE_APPROVED_ROOT'
+        with self.assertRaisesRegex(IntakeError, denial):
             verify(self.spec)
 
     def test_symlink_denied(self):
@@ -196,8 +200,8 @@ class VerifyTest(unittest.TestCase):
         output = self.base / 'result-new'
         export_new(verify(self.spec), output)
         self.assertEqual(set(p.name for p in output.iterdir()), {'result.json', 'summary.csv', 'summary.html'})
-        self.assertEqual(json.loads((output / 'result.json').read_text())['status'], 'OK')
-        self.assertNotIn('ITEM-A', (output / 'summary.html').read_text())
+        self.assertEqual(json.loads((output / 'result.json').read_text(encoding='utf-8'))['status'], 'OK')
+        self.assertNotIn('ITEM-A', (output / 'summary.html').read_text(encoding='utf-8'))
         with self.assertRaisesRegex(IntakeError, 'OUTPUT_EXISTS_NO_OVERWRITE'):
             export_new(verify(self.spec), output)
         self.assertEqual(before, {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in self.root.iterdir()})
@@ -236,5 +240,5 @@ class AuditBoundaryTest(VerifyTest):
         output = self.base / 'review'
         export_new(r, output)
         self.assertNotIn('=cmd', (output / 'summary.csv').read_text(encoding='utf-8-sig'))
-        self.assertNotIn('=cmd', (output / 'result.json').read_text())
+        self.assertNotIn('=cmd', (output / 'result.json').read_text(encoding='utf-8'))
 
