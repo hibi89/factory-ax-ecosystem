@@ -1,3 +1,8 @@
+# 2026-11-12 KST — Main CI registration update
+- With owner's explicit approval, main only registered a manual-only, synthetic, read-only Windows/Linux QA workflow (`.github/workflows/verify-owner-qa.yml`). Registration SHA: `f54b74ebc5bd838c2305ae18672750fbad87ba4b`. The job executes only when explicitly dispatched against `feature/data-verify`; no automatic runs and total history still 0 at inspection.
+- **Main remains a design/document baseline**, no product logic merged. Actual 82% provisional W1 code and 120 local tests are on `feature/data-verify`, 85 and native Windows/CI unverified; Factory entire ecosystem UNASSESSED. Read feature branch HANDOFF first for current product details; account billing usage/budget must be checked before manual dispatch. All releases HOLD.
+- No other original branches, repos, production, customer files or credentials changed. Latest main SHA is obtained by ref query after this documentation commit. Revert this note/workflow through Git history if needed, no force.
+
 # HANDOFF — Factory AX Ecosystem 총괄 인수인계 (필수 10항)
 > 갱신 기준: **2026-11-12 KST**, 첫 Private 저장소 구조/문서 구성. 새 채팅은 정확한 GitHub 최신 HEAD부터 재조회.
 

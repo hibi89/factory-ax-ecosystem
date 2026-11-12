@@ -1,3 +1,7 @@
+## 2026-11-12 KST — Manual-only CI registered on main; not run
+- Owner explicitly authorized adding read-only, synthetic `workflow_dispatch` Windows/Linux CI registration at `.github/workflows/verify-owner-qa.yml` on default branch (registration commit `f54b74ebc5bd838c2305ae18672750fbad87ba4b`). Runs are guarded to `feature/data-verify`; actual hosted run count 0, account budget unverified. **Main still has no Factory product implementation**; development resides only on feature branch.
+- Local staged feature regression 120/120 PASS and YAML structural checks PASS; native Windows/Windows CI unverified. W1 VERIFY 82% provisional, 85 not accepted; whole ecosystem UNASSESSED, RELEASE HOLD. No paid usage, customer data, automatic triggers, source merge, or permissions/billing changes.
+
 # STATUS — Factory AX Ecosystem
 > 2026-11-12 KST · **신규 Private 저장소 문서/브랜치 세팅 단계. 현재 개발은 아직 시작하지 않음.**
 
