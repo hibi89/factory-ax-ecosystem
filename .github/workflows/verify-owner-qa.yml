@@ -1,0 +1,59 @@
+name: Factory AX VERIFY manual synthetic QA (no customer data)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: factoryax-verify-owner-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  qa:
+    # Main registers the workflow; select the feature branch for actual tests.
+    if: github.ref == 'refs/heads/feature/data-verify'
+    timeout-minutes: 12
+    # Manual dispatch only. Do not run until private billing usage/cap is confirmed.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python
+        shell: bash
+        run: python -m compileall -q factoryax tests scripts examples
+      - name: Full synthetic regression
+        shell: bash
+        run: python -m unittest discover -s tests -q
+      - name: Build and verify unsigned candidate locally
+        shell: bash
+        run: |
+          python scripts/build_candidate.py --output owner-qa-bundle
+          python scripts/build_candidate.py --output owner-qa-bundle --verify
+      - name: Synthetic four-role owner report / backup / restore (Windows included)
+        shell: bash
+        run: |
+          python examples/make_reconcile_synthetic.py owner-qa-synthetic
+          python -m factoryax --spec owner-qa-synthetic/approved.json --output owner-qa-report
+          python -m factoryax --verify-report owner-qa-report
+          python -m factoryax --backup-report owner-qa-report --output owner-qa-backup.zip
+          python -m factoryax --restore-backup owner-qa-backup.zip --output owner-qa-restored
+          python -m factoryax --verify-report owner-qa-restored
+      - name: Windows CMD must forward BLOCKED exit=3 and preserve existing report
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & .\owner-qa-bundle\RUN_VERIFY_WINDOWS.cmd --verify-report owner-qa-report
+          if ($LASTEXITCODE -ne 0) { throw "Windows CMD verify exit code: $LASTEXITCODE" }
+          $before = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
+          & .\owner-qa-bundle\RUN_VERIFY_WINDOWS.cmd --spec owner-qa-synthetic/approved.json --output owner-qa-report
+          if ($LASTEXITCODE -ne 3) { throw "Windows CMD blocked exit should be 3, actual: $LASTEXITCODE" }
+          $after = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
+          if ($before -ne $after) { throw "Blocked run modified existing report" }
+      - name: Real Tk widgets in virtual Linux display (not native Windows GUI)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: xvfb-run -a python scripts/gui_smoke.py
