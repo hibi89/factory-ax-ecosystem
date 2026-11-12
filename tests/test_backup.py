@@ -51,6 +51,39 @@ class BackupTests(unittest.TestCase):
             backup(self.report, self.zip)
         self.assertEqual(before, self.zip.read_bytes())
 
+    def test_backup_rejects_source_mutation_after_initial_verification(self):
+        authentic_verify = verify_candidate
+        mutated = False
+
+        def change_after_verification(directory):
+            nonlocal mutated
+            result = authentic_verify(directory)
+            if not mutated:
+                mutated = True
+                (self.report / 'summary.csv').write_bytes(b'changed after verified')
+            return result
+
+        with patch('factoryax.backup.verify_candidate', side_effect=change_after_verification):
+            with self.assertRaisesRegex(IntakeError, 'BACKUP_SOURCE_CHANGED_DURING_CAPTURE'):
+                backup(self.report, self.zip)
+        self.assertFalse(self.zip.exists())
+
+    def test_backup_rejects_source_mutation_during_archive_write(self):
+        genuine_write = ZipFile.writestr
+        mutated = False
+
+        def mutate_on_first_archive_member(archive, *args, **kwargs):
+            nonlocal mutated
+            if not mutated:
+                mutated = True
+                (self.report / 'summary.csv').write_bytes(b'changed while writing')
+            return genuine_write(archive, *args, **kwargs)
+
+        with patch.object(ZipFile, 'writestr', mutate_on_first_archive_member):
+            with self.assertRaisesRegex(IntakeError, 'REPORT_FILE_DRIFT'):
+                backup(self.report, self.zip)
+        self.assertFalse(self.zip.exists())
+
     def test_backup_competing_writer_race_never_deletes_winner(self):
         # Reproduce TOCTOU between initial not-exists check and 'xb' open.
         original_open = Path.open

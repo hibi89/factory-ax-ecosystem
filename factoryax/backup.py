@@ -20,11 +20,30 @@ BACKUP_META = 'BACKUP_MANIFEST.json'
 
 def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
     report_dir = Path(report_dir)
-    verify_candidate(report_dir)
+    verified_before = verify_candidate(report_dir)
     target = Path(archive_path).absolute()
     if target.suffix.lower() != '.zip' or not target.parent.is_dir() or target.parent.is_symlink() or target.exists() or target.is_symlink():
         raise IntakeError('BACKUP_TARGET_UNSAFE_OR_EXISTS')
     payloads = {name: (report_dir / name).read_bytes() for name in BACKUP_FILES}
+    # An operator or a concurrent process can mutate the source after initial
+    # verification but before the individual file reads. Never mark an
+    # inconsistent collection as a successful backup.
+    if _sha(payloads[RECEIPT]) != verified_before['receipt_sha256']:
+        raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_CAPTURE')
+    try:
+        receipts = json.loads(payloads[RECEIPT])
+        complete = payloads[COMPLETE].decode('ascii')
+        if (complete != _sha(payloads[RECEIPT]) + '\n' or
+                set(receipts['sha256']) != set(ARTIFACTS) or
+                any(_sha(payloads[name]) != receipts['sha256'][name] for name in ARTIFACTS)):
+            raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_CAPTURE')
+        report = json.loads(payloads['result.json'])
+        if (receipts.get('status') != report.get('status') or
+                receipts.get('source_manifest_sha256') !=
+                _sha(json.dumps(report.get('manifests'), sort_keys=True).encode())):
+            raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_CAPTURE')
+    except (UnicodeError, ValueError, TypeError, KeyError, AttributeError) as exc:
+        raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_CAPTURE') from exc
     meta = {'schema': 'factoryax.report.backup.v1', 'release': 'HOLD',
             'sha256': {name: _sha(data) for name, data in payloads.items()},
             'authorization': 'OWNER_MANUAL_ONLY', 'signature': 'UNSIGNED'}
@@ -43,6 +62,11 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
                     archive.writestr(info, data)
             output.flush()
             os.fsync(output.fileno())
+        # Recheck after archive write: this does not promise a transactional
+        # snapshot, but detects a source change during the backup operation.
+        verified_after = verify_candidate(report_dir)
+        if verified_after['receipt_sha256'] != verified_before['receipt_sha256']:
+            raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_WRITE')
     except BaseException:
         # Delete only a partial archive created by THIS invocation.  Do not
         # unlink a competing process's file if creation lost the race, or a
