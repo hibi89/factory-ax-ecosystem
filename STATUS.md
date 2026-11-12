@@ -1,3 +1,13 @@
+## 2026-11-12 KST — Factory VERIFY first executable W1-50 checkpoint (feature only)
+- Product: **Factory AX VERIFY W1 50% provisional engineering milestone**, limited basic intake/quality. **Whole Factory AX Ecosystem completion remains UNASSESSED**, W2-W4 NOT BUILT, all **RELEASE HOLD**. No customer release claim.
+- Original Python 3.11+ stdlib local offline code: four manually approved synthetic/authorized CSV/restricted XLSX sources; exact source SHA, row provenance, versioned mapping; five quality rule families, OK/REVIEW_REQUIRED/BLOCKED; new-only HTML/JSON/CSV summary.
+- Local synthetic same source/test files: **54 PASS / 0 FAIL / 0 SKIP**, compileall PASS; actual synthetic four-file CLI return OK; negative CLI review/blocked and no overwrite tested. Product blob SHA `dc4be03b682679211d16aed7c3efd6ac45c41f82`; tests blob SHA `30e014751b2e8c7511d4493d3fde31749ed51d94`; example blob `f7b26da338948e9d4dc404c52cf220f1dc1fdee3`. Exact GitHub blobs verified against local bytes.
+- **NOT VERIFIED**: PREP source golden parity (new standalone PREP has no GitHub runtime), EAI integration, cross-stage 1:N and returns/date/quantities, Windows 10/11 PC and Excel exports, concurrency race-free persistence, customer rights/security, installer/CI/Production. Only limited quality OK, not product/customer acceptance.
+- Repo `hibi89/factory-ax-ecosystem@feature/data-verify`; baseline `main@29b9653ccbc4bcd36a190f9e9d78954bcc4dae76` untouched. Run `python -m unittest discover -s tests -q` and `python examples/make_synthetic.py /absolute/new/demo`. Evidence `docs/VERIFY_50_EVIDENCE_20261112.md`, user can recover baseline without force.
+
+
+---
+
 # STATUS — Factory AX Ecosystem
 > 2026-11-12 KST · **신규 Private 저장소 문서/브랜치 세팅 단계. 현재 개발은 아직 시작하지 않음.**
 

@@ -1,3 +1,18 @@
+# 2026-11-12 KST — Factory VERIFY W1-50 feature development handoff (latest)
+
+1. **Goal/requirements:** Follow unchanged Factory total W1–W4 blueprint; current W1 CORE+VERIFY 50% *provisional* engineering acceptance only, not whole Factory. Four approved input roles, read-only intake, quality, SHA/row evidence and new report; RELEASE HOLD.
+2. **Delivered:** Independently authored Python3.11+ stdlib `factoryax/verify.py`, `__main__.py`, synthetic fixture generator, negative/positive tests, source-free report summary and docs. Decision: new Python contract adapter vs copying Node PREP/EAI; no upstream proprietary copy, no customer's files.
+3. **Tests:** Local Linux isolated exact source/test blobs verified: `python -m unittest discover -s tests -q` **54 PASS / 0 FAIL / 0 SKIP**; compileall PASS; generated 4 synthetic CSV+approved SHA and CLI `python -m factoryax --spec ... --output ...` returned **OK exit 0**; REVIEW exit2 and BLOCKED exit3 tested. No GitHub CI execution at this SHA. SHA: code `dc4be03b682679211d16aed7c3efd6ac45c41f82`; tests `30e014751b2e8c7511d4493d3fde31749ed51d94`; example `f7b26da338948e9d4dc404c52cf220f1dc1fdee3`.
+4. **Status/percent:** **W1 VERIFY 50% provisional engineering milestone** only, actual full product 100% acceptance not reached; overall Factory Ecosystem **UNASSESSED**; W2–W4 not implemented; no commercial release/customer/production.
+5. **Failures/limitations/pivot:** First local 26 tests one expected XLSX error-code mismatch; corrected branch behavior and 54/54 now PASS. No repeat blind retry. Excel scope restricted, multi-source snapshot and Windows race/reparse not formally secure; source PREP/EAI golden parity, 1:N/returns/rework, whole stage quantity dates, signed approvals and native Windows packaging pending. Any unknown input BLOCKED/REVIEW not auto-certified.
+6. **Repo/branch/SHA/paths:** Private `hibi89/factory-ax-ecosystem@feature/data-verify` (feature SHA check via GitHub after commit), preserved baseline `main@29b9653ccbc4bcd36a190f9e9d78954bcc4dae76`. Paths: `factoryax/*`, `tests/test_verify.py`, `examples/make_synthetic.py`, `VERIFY_README.md`, `docs/VERIFY_50_EVIDENCE_20261112.md`. No merges/force push.
+7. **Production/runtime:** Python>=3.11 stdlib, `python examples/make_synthetic.py /absolute/new/demo`, `python -m factoryax --spec /absolute/new/demo/approved.json --output /absolute/new/demo/report`, no hosted URL or Vercel. Only Linux synthetic checked, Windows/airgap/customer laptop unverified.
+8. **Original/security/recovery:** Existing SMAX, PREP, EAI, HAE, other repo branches and production untouched. No customer data/keys/external model, uploaded examples entirely synthetic. Rollback via feature branch Git history/baseline; never force. User approval required before commercial/customer integration.
+9. **Next steps/acceptance:** Align PREP/EAI golden contracts and explicit source rights, oracle for 1:N/partial/returns/LOT/units/dates, 10 scenario negative test suite, owner profile UI, race-safe multi-file capture; then W1 70% judged, later native Win packaging/physical acceptance/rights/pricing/user release approval. No reinterpretation of W2-W4.
+10. **Checked KST/evidence:** 2026-11-12 KST; local Linux synthetic tests and GitHub exact file SHA parity, not production/CI/customer validation. This document's final commit SHA must be read from branch ref after write. [Test scope](docs/VERIFY_50_EVIDENCE_20261112.md).
+
+---
+
 # HANDOFF — Factory AX Ecosystem 총괄 인수인계 (필수 10항)
 > 갱신 기준: **2026-11-12 KST**, 첫 Private 저장소 구조/문서 구성. 새 채팅은 정확한 GitHub 최신 HEAD부터 재조회.
 

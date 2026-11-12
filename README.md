@@ -1,3 +1,5 @@
+> **feature/data-verify 2026-11-12:** First executable Factory VERIFY **W1 50% provisional engineering** milestone, limited synthetic CSV/XLSX quality and reports. Original main design-only baseline preserved, entire Factory Ecosystem **UNASSESSED**, commercial **RELEASE HOLD**. See [VERIFY_README.md](VERIFY_README.md) and [checkpoint evidence](docs/VERIFY_50_EVIDENCE_20261112.md).
+
 # Factory AX Ecosystem
 > **Private · design baseline 2026-11-12 KST · NOT BUILT / RELEASE HOLD**
 
