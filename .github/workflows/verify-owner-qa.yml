@@ -25,9 +25,9 @@ jobs:
       - name: Compile Python
         shell: bash
         run: python -m compileall -q factoryax tests scripts examples
-      - name: Full synthetic regression
+      - name: Isolated synthetic regression (fail closed; bounded per-file timeout)
         shell: bash
-        run: python -m unittest discover -s tests -q
+        run: python scripts/run_ci_regressions.py --timeout 65
       - name: Build and verify unsigned candidate locally
         shell: bash
         run: |
