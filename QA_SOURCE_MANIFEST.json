@@ -1,0 +1,28 @@
+{
+  "files": {
+    "README_WINDOWS_QA_KO.md": "16d3a58e39f9422582e3eae25a1aab247c6d52a81cb0dbc1b7fe1b82db058869",
+    "RUN_FACTORYAX_WINDOWS_QA.cmd": "ad113eb967bcb8fa0a0aa942c2f831cc28749a68bb17b4fa1a7a16dd4f1801d6",
+    "examples/make_reconcile_synthetic.py": "f73b06723e5501d8f1fed562f36c8b34925f4ff2a1eeff90f6bda9ead50e47fa",
+    "examples/make_synthetic.py": "a38f111c5dc6d5175dd808487dd5d4d2fb6d6e70631aedbdae99fd5f97130dc8",
+    "factoryax/__init__.py": "7b2052a6f53382b153dbfa4936e8b444d3d5cb79e38f7b45dcea00828d786bbc",
+    "factoryax/__main__.py": "f06f825c31156c1deca2d3408a946c98b7529e5a5a3e28f52f02684cff3af18b",
+    "factoryax/backup.py": "0bafd955cfe8d30ac9870e75b083f9e9ac26c8f4e79961bff6bbf8d3959180c4",
+    "factoryax/delivery.py": "32cb1cb29601d606bab7cd16417d50ec24b6334f317906db411b39296d40dde9",
+    "factoryax/gui.py": "4a7235c5731c8f549e93bdf7efed55d55c2df0c1140e0b6832df9cf6119aa442",
+    "factoryax/reconcile.py": "63343d68b864d259a870e9a58a9a5b4904ddec1a8dd551dcb11fe3b27072c5fe",
+    "factoryax/verify.py": "82289a2834bc4e0232774030822c00c5e00ff96c11ffc3a84b684ac33ddb370e",
+    "scripts/build_candidate.py": "252f235df40247b1042740c1162c8d386ca5380f08a9d9ed396cb9d21cf6ccf9",
+    "scripts/gui_smoke.py": "349898653717a683f16bb2bd544443e87a3437f87f23f62cf327fff8312eb8d7",
+    "scripts/owner_windows_qa.py": "57e2e5dc751844c8ac014b084c07516fa0d643703972d279d13d4e484e95e53f",
+    "tests/test_backup.py": "6cd3d7a23b35a350db9eebf6faa783c098f9242945ee9a7a30b1179394753591",
+    "tests/test_delivery.py": "46bdba65c0373c83cc37f534c4d5395a5cda2ac1a4965a71e0d49a4b25033969",
+    "tests/test_malformed_rejection.py": "d346165f9be7489cf46f0c561671fa0861bb22743d00450d51ab6daafa5d6d85",
+    "tests/test_owner_windows_qa.py": "ebe10d2b51615364eb56a21ac00f0403354e01e67f96b2cc624749218c1a83de",
+    "tests/test_profile_contract.py": "9faeec6e2e009dc710fbd7d52ce5cdfaf2237506f47b46e27c60e101804a08ce",
+    "tests/test_reconciliation.py": "288cd8375d4252f993e7dbe79cc899f22a80a2cb8a88854e03c3b876787a2f2c",
+    "tests/test_verify.py": "5061b96e2ec4e4d654332ac92365ed53bcc63d380f27ce580022f7d0f0cbdebb"
+  },
+  "release": "HOLD",
+  "schema": "factoryax.owner-qa-source.v1",
+  "signature": "UNSIGNED"
+}
