@@ -53,6 +53,10 @@ jobs:
           if ($LASTEXITCODE -ne 3) { throw "Windows CMD blocked exit should be 3, actual: $LASTEXITCODE" }
           $after = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
           if ($before -ne $after) { throw "Blocked run modified existing report" }
+      - name: Native Windows Tk synthetic GUI widgets
+        if: runner.os == 'Windows'
+        shell: bash
+        run: python scripts/gui_smoke.py
       - name: Real Tk widgets in virtual Linux display (not native Windows GUI)
         if: runner.os == 'Linux'
         shell: bash

@@ -1,3 +1,8 @@
+# 2026-11-12 KST — Main CI manual native Windows GUI gate
+- Owner-approved default-branch CI registration preserved; added Windows native Tk synthetic widget step. No product sources merged, no auto-trigger, runner execution/billing, customer data or external API. Main remains baseline.
+- Current Factory feature source `f3e2649c49a73c2621180bab115d30ef4a16ea1b` has source-only Windows one-click QA. Local split-suite 134 PASS; actual Windows CMD/Tk/CI **not run**, score 82 provisional and RELEASE HOLD. Full 10-point product handoff on `feature/data-verify/HANDOFF.md`.
+- To proceed: inspect account Actions usage/budgets and manually dispatch feature workflow, or run `RUN_FACTORYAX_WINDOWS_QA.cmd` from verified source ZIP on owner ordinary Windows. GitHub main latest SHA read after write; revert without force.
+
 # 2026-11-12 KST — Main CI registration update
 - With owner's explicit approval, main only registered a manual-only, synthetic, read-only Windows/Linux QA workflow (`.github/workflows/verify-owner-qa.yml`). Registration SHA: `f54b74ebc5bd838c2305ae18672750fbad87ba4b`. The job executes only when explicitly dispatched against `feature/data-verify`; no automatic runs and total history still 0 at inspection.
 - **Main remains a design/document baseline**, no product logic merged. Actual 82% provisional W1 code and 120 local tests are on `feature/data-verify`, 85 and native Windows/CI unverified; Factory entire ecosystem UNASSESSED. Read feature branch HANDOFF first for current product details; account billing usage/budget must be checked before manual dispatch. All releases HOLD.
