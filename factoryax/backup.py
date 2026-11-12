@@ -11,7 +11,7 @@ import shutil
 import stat
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, BadZipFile
 
-from .delivery import ARTIFACTS, COMPLETE, RECEIPT, verify_candidate, _sha
+from .delivery import ARTIFACTS, COMPLETE, RECEIPT, verify_candidate, _sha, _require_plain_directory
 from .verify import IntakeError
 
 BACKUP_FILES = tuple(sorted(set(ARTIFACTS) | {RECEIPT, COMPLETE}))
@@ -22,7 +22,8 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
     report_dir = Path(report_dir)
     verified_before = verify_candidate(report_dir)
     target = Path(archive_path).absolute()
-    if target.suffix.lower() != '.zip' or not target.parent.is_dir() or target.parent.is_symlink() or target.exists() or target.is_symlink():
+    _require_plain_directory(target.parent)
+    if target.suffix.lower() != '.zip' or target.exists() or target.is_symlink():
         raise IntakeError('BACKUP_TARGET_UNSAFE_OR_EXISTS')
     payloads = {name: (report_dir / name).read_bytes() for name in BACKUP_FILES}
     # An operator or a concurrent process can mutate the source after initial
@@ -85,11 +86,12 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
 
 def restore(archive_path: str | Path, new_dir: str | Path) -> dict:
     archive_path = Path(archive_path)
+    _require_plain_directory(archive_path.absolute().parent)
     target = Path(new_dir).absolute()
+    _require_plain_directory(target.parent)
     if archive_path.is_symlink() or not archive_path.is_file() or archive_path.stat().st_size > 20*1024*1024:
         raise IntakeError('BACKUP_SOURCE_UNSAFE_OR_TOO_LARGE')
-    if (not target.parent.is_dir() or target.parent.is_symlink() or
-            target.exists() or target.is_symlink()):
+    if target.exists() or target.is_symlink():
         raise IntakeError('RESTORE_TARGET_UNSAFE_OR_EXISTS')
     try:
         with ZipFile(archive_path, 'r') as archive:

@@ -1,3 +1,16 @@
+# 2026-11-12 KST — Factory VERIFY path ancestor QA handoff (10 required items)
+1. **Goal:** Factory W1 VERIFY target 85; 82% provisional on prior acceptance matrix, entire W1–W4 ecosystem UNASSESSED, all RELEASE HOLD.
+2. **Implemented & decision:** fixed symlink/junction ancestor alias preflight via component-wise `lstat` in `factoryax/delivery.py`; covers spec/approved root/report/backup/restore. Compared resolve-only vs lstat (choose explicit fail-closed B); preserved prior four-stage manufacturing engine/packager. Added 6 negative tests.
+3. **Tests:** Linux Python3.13 separate completed test files: backup15, delivery24, malformed4, profile4, reconciliation29, verify54 = **130 PASS/0 FAIL/0 SKIP**. Full-suite single invocation timed out; NOT counted. Compileall, deterministic package verified, four-stage CLI→backup→restore, Linux real Tk/Xvfb GUI PASS. Windows CI and native device NOT RUN.
+4. **Status:** First product VERIFY W1 82% provisional; 85 acceptance WAITING on Windows/CI and security/rights. Overall Factory AX Ecosystem UNASSESSED; W2–W4 not integrated.
+5. **Risks/failures/stop:** Symlink ancestor possible path escape and unspecified races; resolved with conservative preflight. This is not handle-atomic against malicious concurrent directory replacements. GitHub Actions run count 0 and connected GitHub lacks dispatch/billing; do not retry blind or claim fee-free availability.
+6. **Repo/SHA/paths:** Private `hibi89/factory-ax-ecosystem@feature/data-verify`; original feature HEAD `7ac39e8009e3c2312e1f2b616ec66f0d1d237794`. Changed `factoryax/{delivery,backup}.py`, `tests/test_{delivery,backup}.py`, docs `VERIFY_82_PATH_ANCESTOR_QA_20261112.md`, `STATUS.md`, `HANDOFF.md`. New HEAD re-fetch from remote; rollback via Git normal revert, no force push.
+7. **Production/run:** `python -m unittest discover -s tests -q` (may exceed single-call time cap; use individual `PYTHONPATH=tests python -m unittest -q test_NAME`), `python scripts/build_candidate.py --output NEW_DIR`, `python -m factoryax --spec APPROVED.json --output NEW_REPORT`. Python3.11+; GUI Tkinter optional, Windows native command shell unverified; Production/Vercel N/A.
+8. **Originals/security:** No customer files, sensitive data, external AI requests, source transfer, permission changes, paid CI or production. Original PREP/EAI/SMAX/HAE and Factory main code intact, synthetic fixtures only.
+9. **Next:** owner inspects GitHub billing Actions usage and hard stop then manually dispatches default-registered workflow at `feature/data-verify` or runs owner Windows native QA. Collect Windows CMD/PowerShell/GUI/NTFS/junction/Unicode/Defender evidence, CI logs; fix observed issues, then rate 85 only if acceptance matrix passes.
+10. **KST / evidence:** 2026-11-12 KST, GitHub blob identities + Linux only. Test evidence is `docs/VERIFY_82_PATH_ANCESTOR_QA_20261112.md`, source base SHA `7ac39e8009e3c2312e1f2b616ec66f0d1d237794` and final remote HEAD after writing. No commercial user acceptance.
+---
+
 # 2026-11-12 KST — Factory W1 VERIFY malformed input safety handoff
 1. Goal: W1 VERIFY 85% target; 82% provisional currently; whole Factory ecosystem UNASSESSED.
 2. Done: Kept original code and four-role reconciliation; type-guarded untrusted JSON in delivery/report/backup; four CLI cases return BLOCKED=3 without traceback.

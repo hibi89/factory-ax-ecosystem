@@ -58,6 +58,40 @@ class DeliveryTests(unittest.TestCase):
         with self.assertRaises(IntakeError):
             run(self.spec_path, self.out)
 
+    def test_symlinked_ancestor_denied_before_writing(self):
+        genuine = self.root / 'real-parent'
+        genuine.mkdir()
+        link = self.root / 'alias-parent'
+        try:
+            link.symlink_to(genuine, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        candidate = link / 'new-report'
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            run(self.spec_path, candidate)
+        self.assertFalse((genuine / 'new-report').exists())
+
+    def test_existing_report_via_symlinked_ancestor_denied(self):
+        run(self.spec_path, self.out)
+        alias = self.root / 'alias-report-root'
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            verify_candidate(alias / 'new-report')
+        self.assertEqual(verify_candidate(self.out)['status'], 'OK')
+
+    def test_spec_read_via_symlinked_ancestor_denied(self):
+        alias = self.root / 'alias-spec-root'
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            run(alias / 'inputs' / 'approved.json', self.out)
+        self.assertFalse(self.out.exists())
+
     def test_receipt_tamper(self):
         run(self.spec_path, self.out)
         (self.out / 'result.json').write_text('bad', encoding='utf-8')

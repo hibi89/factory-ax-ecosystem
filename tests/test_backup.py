@@ -44,6 +44,38 @@ class BackupTests(unittest.TestCase):
         self.assertEqual(before, (self.restored / 'result.json').read_bytes())
         self.assertEqual(verify_candidate(self.restored)['status'], 'OK')
 
+    def test_backup_output_via_symlinked_ancestor_denied(self):
+        alias = self.root / 'backup-alias'
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            backup(self.report, alias / 'safe.zip')
+        self.assertFalse(self.zip.exists())
+
+    def test_restore_output_via_symlinked_ancestor_denied(self):
+        backup(self.report, self.zip)
+        alias = self.root / 'restore-alias'
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            restore(self.zip, alias / 'new-restored')
+        self.assertFalse((self.root / 'new-restored').exists())
+
+    def test_restore_zip_via_symlinked_ancestor_denied(self):
+        backup(self.report, self.zip)
+        alias = self.root / 'zip-alias'
+        try:
+            alias.symlink_to(self.root, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('directory symlink unsupported by this OS')
+        with self.assertRaisesRegex(IntakeError, 'UNSAFE_DIRECTORY_ANCESTOR'):
+            restore(alias / 'safe.zip', self.restored)
+        self.assertFalse(self.restored.exists())
+
     def test_repeated_backup_cannot_overwrite(self):
         backup(self.report, self.zip)
         before = self.zip.read_bytes()

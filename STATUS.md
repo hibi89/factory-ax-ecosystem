@@ -1,3 +1,11 @@
+## 2026-11-12 KST — Path ancestor read/write safety hardening, VERIFY W1 82% retained
+- Verified baseline `7ac39e8009e3c2312e1f2b616ec66f0d1d237794`. Added component-wise `lstat` all-ancestor directory guard against POSIX symlink/Windows reparse alias for spec, approved root, report, backup and restore. This is conservative preflight, NOT atomic Windows handle+ACL protection. No PREP/EAI/etc source copied/changed.
+- Linux Python3.13 **130 PASS/0 FAIL/0 SKIP**, counted from six individually completed module suites (15+24+4+4+29+54); two separate monolithic full-suite invocations reached process time limits without completion and are **not** claimed PASS. `compileall` PASS; clean unsigned ZIPAPP build+verify, synthetic 4-stage CLI/report+backup+restore integrity and real Tk/Xvfb GUI PASS.
+- Exact new feature code/test blobs must match local SHA: delivery `67855be8149ed2caa137a852f73947218903da07`, backup `49d4a55b4e2fd8660f18e412896dd7f0829580f2`, delivery tests `707bc70eba1faa3450a2fc77a32e7cb036441544`, backup tests `980cfac2cafd304967ad2ca4222f23fc491ec5a6`. Full evidence: `docs/VERIFY_82_PATH_ANCESTOR_QA_20261112.md`.
+- GitHub Actions 0 runs seen; native Windows CMD/PowerShell/Tkinter/NTFS/ACL/junction, account compute budget, real customer and commercial rights NOT VERIFIED. W1 VERIFY **82% provisional engineering**, **85% NOT ACCEPTED**; full Factory Ecosystem UNASSESSED. RELEASE HOLD. No main changes, paid CI, customer uploads or deployment.
+- Next external hinge: owner checks Actions usage/budget and manually launches `feature/data-verify` QA; exact hosted Windows/Linux logs and owner native Windows test needed for 85 reevaluation.
+
+
 ## 2026-11-12 KST — W1 VERIFY malformed JSON fail-closed hardening (82% maintained)
 - Real input-contract issue: approved spec [] and malformed report/receipt/backup JSON shape could cause unhandled Python exceptions instead of BLOCKED. Added structural checks and four CLI negative tests expecting exit3, no traceback and no unwanted output.
 - Linux Python3.13.5 targeted 4 PASS; complete verbose suite 124 PASS/0 FAIL/0 SKIP (34.928s); compileall PASS; .pyz package build and integrity verifier PASS. Initial combined runner wrapper timed out; separate verbose diagnostic run completed OK.

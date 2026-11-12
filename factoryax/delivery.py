@@ -41,17 +41,30 @@ def _source_recheck(spec: dict, report: dict) -> None:
             raise IntakeError('SOURCE_DRIFT_BEFORE_REPORT_COMMIT')
 
 
+def _require_plain_directory(directory: str | Path) -> Path:
+    """Conservatively reject symlinks/junctions in *every* directory ancestor.
+
+    This is a bounded preflight, not race-proof ACL enforcement: a privileged
+    concurrent process can still replace a directory after checking it.
+    """
+    directory = Path(directory).absolute()
+    for component in reversed((directory, *directory.parents)):
+        try:
+            info = component.lstat()  # unlike stat(), does not follow the link
+        except OSError as exc:
+            raise IntakeError('UNSAFE_DIRECTORY_ANCESTOR') from exc
+        if (not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or
+                getattr(info, 'st_file_attributes', 0) &
+                getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400)):
+            raise IntakeError('UNSAFE_DIRECTORY_ANCESTOR')
+    return directory
+
+
 def _check_output_parent(out: Path) -> None:
     if not out.is_absolute() or out.name in ('', '.', '..'):
         raise IntakeError('OUTPUT_INVALID')
-    parent = out.parent
-    if not parent.is_dir() or parent.is_symlink() or out.is_symlink():
-        raise IntakeError('OUTPUT_PARENT_INVALID')
-    if os.name == 'nt':
-        attrs = getattr(parent.stat(), 'st_file_attributes', 0)
-        if attrs & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400):
-            raise IntakeError('OUTPUT_REPARSE_DENIED')
-    if out.exists() or os.path.lexists(out):
+    _require_plain_directory(out.parent)
+    if out.is_symlink() or out.exists() or os.path.lexists(out):
         raise IntakeError('OUTPUT_EXISTS_NO_OVERWRITE')
 
 
@@ -120,9 +133,7 @@ def export_candidate(report: dict, out: str | Path, *, spec: dict | None = None)
 
 
 def verify_candidate(out: str | Path) -> dict:
-    out = Path(out)
-    if out.is_symlink() or not out.is_dir():
-        raise IntakeError('REPORT_DIRECTORY_INVALID')
+    out = _require_plain_directory(out)
     entries = {p.name for p in out.iterdir()}
     if entries != set(ARTIFACTS) | {RECEIPT, COMPLETE}:
         raise IntakeError('REPORT_UNEXPECTED_OR_MISSING_FILES')
@@ -160,6 +171,7 @@ def verify_candidate(out: str | Path) -> dict:
 
 def run(spec_path: str | Path, output: str | Path) -> dict:
     source = Path(spec_path)
+    _require_plain_directory(source.absolute().parent)
     if source.is_symlink() or not source.is_file() or source.stat().st_size > 1024 * 1024:
         raise IntakeError('SPEC_NOT_REGULAR_OR_TOO_LARGE')
     spec_bytes = source.read_bytes()
@@ -171,7 +183,9 @@ def run(spec_path: str | Path, output: str | Path) -> dict:
     if not isinstance(spec, dict) or not isinstance(spec.get('approved_root'), str):
         raise IntakeError('SPEC_SCHEMA_INVALID')
     # Output is always derived; do not create new directories inside input root.
+    _require_plain_directory(spec['approved_root'])
     approved_root = Path(spec['approved_root']).resolve(strict=True)
+    _require_plain_directory(Path(output).absolute().parent)
     out_parent = Path(output).absolute().parent.resolve(strict=True)
     if os.path.commonpath((str(approved_root), str(out_parent))) == str(approved_root):
         raise IntakeError('OUTPUT_INSIDE_APPROVED_INPUT_ROOT')
