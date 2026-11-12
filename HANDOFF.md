@@ -1,3 +1,15 @@
+# 2026-11-12 KST — Owner-approved default-branch manual CI registration (10-point handoff)
+1. **Goal:** Factory W1 VERIFY target 85; current first-product 82% provisional and whole ecosystem UNASSESSED.
+2. **Change:** With explicit owner approval added `.github/workflows/verify-owner-qa.yml` to `main` and updated its copy on `feature/data-verify`; manual-only, synthetic Ubuntu/Windows matrix, contents read only, target feature branch guard, 12-minute timeout and in-progress cancellation. **No** automatic trigger or functional merge.
+3. **Tests:** Local Python3.13.5 120/120 PASS, compileall PASS, workflow YAML structural assertions PASS. GitHub hosted CI 0 runs, native Windows unverified.
+4. **Status:** Native Windows/CI and billing account quota NOT VERIFIED, W1 VERIFY 82% provisional/85 unaccepted; RELEASE HOLD.
+5. **Failures/gates:** GitHub tools have no fresh workflow dispatch action or GitHub personal billing usage access. Browser connected-context unavailable. Do not claim workflow ran or allowance available. One mandatory manual trigger + quota check remains.
+6. **Source/recovery:** Private `hibi89/factory-ax-ecosystem`, feature workflow SHA `f6915c12aba6b02280029d74eac8e5778844d560` (before docs); `main` registration SHA `f54b74ebc5bd838c2305ae18672750fbad87ba4b`. New docs commits/HEAD must be re-fetched. Rollback by revert, never force.
+7. **Execution:** GitHub Actions workflow `Factory AX VERIFY manual synthetic QA (no customer data)`, branch `feature/data-verify`. `python -m unittest discover -s tests -q`, native QA `powershell -NoProfile -File scripts/windows_native_qa.ps1 -GuiSmoke` only on approved normal Windows PC. Production/Vercel N/A.
+8. **Security/source:** No customer files, credentials, external AI, paid CI use or secret configuration. Other repositories/functional main unchanged. No active hosted API/service.
+9. **Next:** Verify personal account [billing overview](https://github.com/settings/billing), included compute and hard stop budget; manually choose feature branch and run CI only with cost approval/verified allowance; inspect CI logs/Windows results then evaluate W1 85 acceptance. Preserve release HOLD.
+10. **Date/coverage:** 2026-11-12 KST. GitHub actual code/file and branch refs; Linux synthetic only; GitHub CI 0/Windows none. Update status/hand-off and hub with exact follow-up SHA.
+
 # 2026-11-12 KST — Factory AX VERIFY backup integrity race follow-up (10-point current)
 1. **Objective:** W1 VERIFY 85% target on `feature/data-verify` (currently 82% provisional), not W2–W4 Factory overall.
 2. **Implemented/decision:** Chose bounded source snapshot revalidation instead of OS-wide file locking/transactions. Captured report files must match initial receipt, completion SHA, manifest and status; source verified again after ZIP write. Existing exclusive `xb`/own-inode cleanup retained; no source PREP/EAI copied.
