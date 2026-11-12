@@ -125,6 +125,21 @@ class DeliveryTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(verify_candidate(self.out)['status'], 'OK')
 
+    def test_windows_launcher_preserves_blocked_exit_code(self):
+        """Windows CMD expands %errorlevel% before a parenthesized block.
+
+        The generated launcher must use separate command lines after a GOTO,
+        so a 3/BLOCKED exit is not accidentally converted to 0/OK.
+        Native behavior is checked by the Windows CI job, not this static test.
+        """
+        pkg = self.root / 'pkg'; build(BASE, pkg)
+        batch = (pkg / 'RUN_VERIFY_WINDOWS.cmd').read_bytes().decode('ascii')
+        self.assertIn('if errorlevel 1 goto use_python\r\n', batch)
+        self.assertIn('py -3 "%~dp0FactoryAX-VERIFY.pyz" %*\r\nexit /b %errorlevel%\r\n', batch)
+        self.assertIn('python "%~dp0FactoryAX-VERIFY.pyz" %*\r\nexit /b %errorlevel%\r\n', batch)
+        self.assertNotIn('if %errorlevel% equ 0 (', batch)
+        self.assertNotIn('!errorlevel!', batch)
+
     def test_deterministic_build(self):
         p = self.root / 'p'; q = self.root / 'q'
         build(BASE, p); build(BASE, q)

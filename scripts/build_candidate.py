@@ -14,10 +14,10 @@ FILES = ('factoryax/__init__.py', 'factoryax/__main__.py', 'factoryax/verify.py'
 MAIN = "from factoryax.delivery import main\nraise SystemExit(main())\n"
 LAUNCHER = ("@echo off\r\nsetlocal\r\n"
             "where py >nul 2>nul\r\n"
-            "if %errorlevel% equ 0 (\r\n"
-            "  py -3 \"%~dp0FactoryAX-VERIFY.pyz\" %*\r\n"
-            "  exit /b %errorlevel%\r\n"
-            ")\r\n"
+            "if errorlevel 1 goto use_python\r\n"
+            "py -3 \"%~dp0FactoryAX-VERIFY.pyz\" %*\r\n"
+            "exit /b %errorlevel%\r\n"
+            ":use_python\r\n"
             "python \"%~dp0FactoryAX-VERIFY.pyz\" %*\r\n"
             "exit /b %errorlevel%\r\n")
 

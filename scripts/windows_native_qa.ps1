@@ -44,6 +44,12 @@ try {
         $cmd = Join-Path $candidate 'RUN_VERIFY_WINDOWS.cmd'
         & $cmd --verify-report $restored
         Check-Exit
+        # Windows .cmd must propagate BLOCKED exit=3; otherwise CI can report a false OK.
+        $resultHashBefore = (Get-FileHash -LiteralPath (Join-Path $report 'result.json') -Algorithm SHA256).Hash
+        & $cmd --spec (Join-Path $demo 'approved.json') --output $report
+        if ($LASTEXITCODE -ne 3) { throw "Blocked output must exit 3, saw $LASTEXITCODE" }
+        $resultHashAfter = (Get-FileHash -LiteralPath (Join-Path $report 'result.json') -Algorithm SHA256).Hash
+        if ($resultHashBefore -ne $resultHashAfter) { throw 'Blocked run modified an existing report' }
         if ($GuiSmoke) {
             & $python @pyargs (Join-Path $repo 'scripts/gui_smoke.py')
             Check-Exit

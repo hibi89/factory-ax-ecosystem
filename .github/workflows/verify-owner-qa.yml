@@ -36,6 +36,17 @@ jobs:
           python -m factoryax --backup-report owner-qa-report --output owner-qa-backup.zip
           python -m factoryax --restore-backup owner-qa-backup.zip --output owner-qa-restored
           python -m factoryax --verify-report owner-qa-restored
+      - name: Windows CMD must forward BLOCKED exit=3 and preserve existing report
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & .\owner-qa-bundle\RUN_VERIFY_WINDOWS.cmd --verify-report owner-qa-report
+          if ($LASTEXITCODE -ne 0) { throw "Windows CMD verify exit code: $LASTEXITCODE" }
+          $before = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
+          & .\owner-qa-bundle\RUN_VERIFY_WINDOWS.cmd --spec owner-qa-synthetic/approved.json --output owner-qa-report
+          if ($LASTEXITCODE -ne 3) { throw "Windows CMD blocked exit should be 3, actual: $LASTEXITCODE" }
+          $after = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
+          if ($before -ne $after) { throw "Blocked run modified existing report" }
       - name: Real Tk widgets in virtual Linux display (not native Windows GUI)
         if: runner.os == 'Linux'
         shell: bash
