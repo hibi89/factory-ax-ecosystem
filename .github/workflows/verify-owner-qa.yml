@@ -1,0 +1,29 @@
+name: Factory AX VERIFY manual synthetic QA (no customer data)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    # Explicit dispatch only. Do not run until owner confirms private Actions minutes/cost.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python
+        shell: bash
+        run: python -m compileall -q factoryax tests scripts examples
+      - name: Full synthetic regression
+        shell: bash
+        run: python -m unittest discover -s tests -q
+      - name: Build and verify unsigned candidate locally
+        shell: bash
+        run: |
+          python scripts/build_candidate.py --output owner-qa-bundle
+          python scripts/build_candidate.py --output owner-qa-bundle --verify

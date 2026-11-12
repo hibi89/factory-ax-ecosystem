@@ -16,7 +16,6 @@ Exit 0 = `OK` only for limited input-quality rules; exit 2 = `REVIEW_REQUIRED`; 
 
 Synthetic examples can be shared; **do not commit real customer files, credentials or internal folders**. Original PREP/EAI files are not bundled. Documented source/permission/RACE/XLSX limitations and next-stage requirements: `docs/VERIFY_50_EVIDENCE_20261112.md`.
 
-
 ## W1 70%-stage conservative four-stage reconciliation (provisional)
 
 This stage is **not** a 70% complete Factory AX Ecosystem, industrial quality certification, or commercial release.
@@ -32,3 +31,21 @@ The v0 optional `reconciliation_policy` makes four-stage reconciliation mandator
 Supplier policy draft UI is the standalone local `web/supplier_profile.html` (no upload/server/CDN; it only displays a draft JSON with `approved_by:null`). The actual approved mapping, SHA receipts, and input files are separate, locally controlled by the operator; drafts cannot be executed as approved policies.
 
 **Limits:** current policy does not model BOM, exchanges, multi-plant/warehouse, all ERP date conventions, per-piece quality disposition, returned inventory resale, time-of-day same-day sequencing, role/actor authentication, or physical Win/SMB security. No real customers or external secrets were used. Full test/QA evidence: `docs/VERIFY_70_EVIDENCE_20261112.md`. `RELEASE HOLD`.
+
+## W1 85 target — owner-only delivery candidate (currently 82% provisional, **85 NOT VERIFIED**)
+
+The `python -m factoryax` entrypoint now uses the hardened owner-only delivery path. Old `factoryax.verify.main` remains callable for legacy regression, but its direct output function does not provide the new completion/backup protocol. The standard package uses Python 3.11+ **not bundled** and requires no paid API or server.
+
+```sh
+python examples/make_reconcile_synthetic.py /absolute/new/demo
+python -m factoryax --spec /absolute/new/demo/approved.json --output /absolute/new/demo/report-1
+python -m factoryax --verify-report /absolute/new/demo/report-1
+python -m factoryax --backup-report /absolute/new/demo/report-1 --output /absolute/new/demo/backup.zip
+python -m factoryax --restore-backup /absolute/new/demo/backup.zip --output /absolute/new/demo/restored
+python scripts/build_candidate.py --output /absolute/new/owner-bundle
+python scripts/build_candidate.py --output /absolute/new/owner-bundle --verify
+python /absolute/new/owner-bundle/FactoryAX-VERIFY.pyz --spec /absolute/new/demo/approved.json --output /absolute/new/demo/report-2
+python -m factoryax --gui
+```
+
+A `COMPLETE.sha256` receipt and report metadata are **unsigned** and do not authenticate the owner. Interrupted/corrupted report directories are not reusable. Restore never overwrites. Input file rechecks are sequential and **not a four-file transaction**. The Tkinter GUI is source-implemented but native Windows physical UI still NOT RUN. Internal `RUN_VERIFY_WINDOWS.cmd` is QA-only, not signed or installed. Existing source records remain read-only. Every result/backup is local and caller-selected. See [85 target evidence](docs/VERIFY_85_OWNER_CANDIDATE_20261112.md) and [rights inventory](docs/DEPENDENCIES_AND_RIGHTS.md); release HOLD.
