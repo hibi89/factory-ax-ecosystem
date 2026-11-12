@@ -1,3 +1,15 @@
+# 2026-11-12 KST — First hosted Windows QA failure and exact recovery checkpoint
+1. **Scope:** Factory AX W1 VERIFY 85% target; 82% provisional, not overall Factory ecosystem.
+2. **Changes:** No business/product code changed. First real hosted CI failure inspected. Add bounded failure stderr logging to `scripts/run_ci_regressions.py` to reveal Windows regression traceback next run; no swallowed failures.
+3. **Tests:** GitHub Actions run `43173438702`: Ubuntu SUCCESS 134/134, complete synthetic packaging/report/backup/restore/GUI; Windows FAILURE on first test file `test_backup.py`, 15 discovered unittest exit1 with traceback suppressed; later Windows steps skipped. Local Linux backup 15 PASS + injected-failing-subprocess diagnostic test PASS; full local regression not rerun in this patch (previous 134).
+4. **Status:** W1 82% provisional, 85 not passed, RELEASE HOLD; ecosystem UNASSESSED.
+5. **Root/countermeasure:** Failure precise assertion unknown because prior CI runner captured subprocess stderr without printing. Instrumented bounded ASCII-safe diagnostics; rerun only after new branch commit, not old-sha rerun. No speculative Windows source fix until traceback.
+6. **Repo/branch/SHA:** `hibi89/factory-ax-ecosystem` private, `feature/data-verify`, exact failed source `17142a9247c2b787a7881d23fa048470716b63b1`, next docs commit/head query. `main` unchanged; rollback via normal git revert.
+7. **Runtime:** Python3.11, manual GitHub Actions read-only Windows/Linux matrix, user data none, no production.
+8. **Security/backups:** Only synthetic fixtures, no credentials or external AI. Current product 82%-candidate remains unsigned, no customer rights or real physical Windows acceptance.
+9. **Next:** User verify GitHub Actions budget and select Run workflow on `feature/data-verify` latest head; inspect Windows job stdout/stderr, apply smallest justified source fix then test; upgrade to 85 only after native Windows full E2E and independent remaining gates.
+10. **Date/evidence:** 2026-11-12 KST; source CI logs from [run 43173438702](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43173438702); actual native Windows failure, Linux PASS, diagnosis pending.
+
 # 2026-11-12 KST — Factory W1 VERIFY isolated CI gate (10-point handoff)
 1. **Goal:** W1 VERIFY 85% owner candidate; currently 82% provisional, whole Factory Ecosystem UNASSESSED.
 2. **Work and decision:** Retained the proven first-product 4-source engine, backup, Tk GUI and owner QA package; replaced a potentially long monolithic CI unittest invocation with `scripts/run_ci_regressions.py` process-isolated per-file discovery. No repeated minor product modifications, 85 acceptance not relaxed.

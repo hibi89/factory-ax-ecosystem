@@ -45,6 +45,13 @@ def run_suites(*, timeout: int = 65) -> tuple[int, dict]:
             entry["reason"] = "NONPASS_OR_ZERO_TESTS"
             entry["exit_code"] = result.returncode
             entry["discovered"] = count
+            # Windows failure #43173438702 discovered 15 tests but swallowed
+            # their stderr. Print bounded ASCII-safe diagnostics without
+            # changing failure behavior. Synthetic suites only, no user files.
+            safe = output[-20000:].encode("ascii", "backslashreplace").decode("ascii")
+            print("FAILED_SUITE_DIAGNOSTICS_START " + pattern, file=sys.stderr, flush=True)
+            print(safe, file=sys.stderr, flush=True)
+            print("FAILED_SUITE_DIAGNOSTICS_END " + pattern, file=sys.stderr, flush=True)
             return 1, report
         entry.update({"status": "PASS", "tests": count})
         report["total_passed"] += count
