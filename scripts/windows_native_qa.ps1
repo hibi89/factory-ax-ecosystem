@@ -1,4 +1,4 @@
-# Synthetic offline QA on an owner-approved Windows 10/11 **ordinary business PC**.
+﻿# Synthetic offline QA on an owner-approved Windows 10/11 **ordinary business PC**.
 # Only creates new files under a fresh system temp directory; never touches ERP/OT.
 # This script and command are not evidence of a Windows PASS unless actually run.
 [CmdletBinding()]
