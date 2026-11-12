@@ -1,3 +1,5 @@
+> **2026-11-12 KST follow-up:** Native-readiness verification expanded without claiming 85%: 117/117 Linux Python PASS, Linux Xvfb real Tk smoke PASS, competing-backup unlink race fixed, Windows PowerShell owner script and manual-only dual-OS workflow expanded. **Windows native and GitHub Actions remain NOT RUN; W1 score remains 82%, 85 NOT ACCEPTED.** See [new evidence](VERIFY_82_QA_NATIVE_GATES_20261112.md).
+
 # Factory AX VERIFY W1-85 target — offline owner candidate evidence
 
 > 2026-11-12 KST. **Target 85%; verified engineering checkpoint currently 82% provisional, not the formal 85% gate.** Entire Factory AX Ecosystem is UNASSESSED. **RELEASE HOLD**, no real customer, no Production.

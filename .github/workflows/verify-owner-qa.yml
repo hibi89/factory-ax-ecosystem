@@ -27,3 +27,16 @@ jobs:
         run: |
           python scripts/build_candidate.py --output owner-qa-bundle
           python scripts/build_candidate.py --output owner-qa-bundle --verify
+      - name: Synthetic four-role owner report / backup / restore (Windows included)
+        shell: bash
+        run: |
+          python examples/make_reconcile_synthetic.py owner-qa-synthetic
+          python -m factoryax --spec owner-qa-synthetic/approved.json --output owner-qa-report
+          python -m factoryax --verify-report owner-qa-report
+          python -m factoryax --backup-report owner-qa-report --output owner-qa-backup.zip
+          python -m factoryax --restore-backup owner-qa-backup.zip --output owner-qa-restored
+          python -m factoryax --verify-report owner-qa-restored
+      - name: Real Tk widgets in virtual Linux display (not native Windows GUI)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: xvfb-run -a python scripts/gui_smoke.py

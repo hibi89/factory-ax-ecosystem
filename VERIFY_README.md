@@ -1,3 +1,5 @@
+> **2026-11-12 current checkpoint:** W1 VERIFY **82% provisional (85 target NOT verified)**, entire Factory ecosystem UNASSESSED. Linux 117/117 synthetic unit PASS, real Linux Tk/Xvfb QA PASS, local .pyz/backup PASS; native Windows, clean Actions and customer approval NOT RUN. See [native-readiness evidence](docs/VERIFY_82_QA_NATIVE_GATES_20261112.md). All sale/release HOLD.
+
 # Factory AX VERIFY — restricted local W1 prototype
 
 This is a 50%-stage *prototype* for the first Factory AX VERIFY product, **not** a 50% complete Factory AX Ecosystem. No customer deployment. `RELEASE HOLD`.
@@ -49,3 +51,16 @@ python -m factoryax --gui
 ```
 
 A `COMPLETE.sha256` receipt and report metadata are **unsigned** and do not authenticate the owner. Interrupted/corrupted report directories are not reusable. Restore never overwrites. Input file rechecks are sequential and **not a four-file transaction**. The Tkinter GUI is source-implemented but native Windows physical UI still NOT RUN. Internal `RUN_VERIFY_WINDOWS.cmd` is QA-only, not signed or installed. Existing source records remain read-only. Every result/backup is local and caller-selected. See [85 target evidence](docs/VERIFY_85_OWNER_CANDIDATE_20261112.md) and [rights inventory](docs/DEPENDENCIES_AND_RIGHTS.md); release HOLD.
+
+## W1 85 native QA preparations (NOT a Windows PASS)
+
+Run locally on an **authorized non-OT Windows 10/11 PC**, from the checked-out source and after reviewing `scripts/windows_native_qa.ps1`:
+
+```powershell
+powershell.exe -NoProfile -File scripts/windows_native_qa.ps1
+# Optional displayed Tkinter synthetic QA if the Windows desktop is available
+powershell.exe -NoProfile -File scripts/windows_native_qa.ps1 -GuiSmoke
+```
+
+On Linux with a graphical test display: `xvfb-run -a python scripts/gui_smoke.py`.
+The GitHub Ubuntu+Windows test matrix is **manual-only**; run only after authorizing private GitHub Actions usage/minutes. Do not imply success from preparing these scripts.

@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from zipfile import ZipFile, ZIP_DEFLATED
+from unittest.mock import patch
 
 from factoryax.delivery import IntakeError, run, verify_candidate
 from factoryax.backup import backup, restore
@@ -49,6 +50,39 @@ class BackupTests(unittest.TestCase):
         with self.assertRaisesRegex(IntakeError, 'BACKUP_TARGET'):
             backup(self.report, self.zip)
         self.assertEqual(before, self.zip.read_bytes())
+
+    def test_backup_competing_writer_race_never_deletes_winner(self):
+        # Reproduce TOCTOU between initial not-exists check and 'xb' open.
+        original_open = Path.open
+        winner = b'COMPETING PROCESS PRIVATE FILE - MUST NOT DELETE'
+
+        def competitor_open(path, mode='r', *args, **kwargs):
+            if path == self.zip and mode == 'xb':
+                self.zip.write_bytes(winner)
+                raise FileExistsError('competitor won exclusive creation')
+            return original_open(path, mode, *args, **kwargs)
+
+        with patch.object(Path, 'open', competitor_open):
+            with self.assertRaises(FileExistsError):
+                backup(self.report, self.zip)
+        self.assertEqual(self.zip.read_bytes(), winner)
+
+    def test_backup_write_failure_only_cleans_own_inode(self):
+        import os
+        original_fsync = os.fsync
+        called = 0
+
+        def fail_first_fsync(fd):
+            nonlocal called
+            called += 1
+            if called == 1:
+                raise OSError('synthetic failure')
+            return original_fsync(fd)
+
+        with patch('factoryax.backup.os.fsync', side_effect=fail_first_fsync):
+            with self.assertRaises(OSError):
+                backup(self.report, self.zip)
+        self.assertFalse(self.zip.exists())
 
     def test_repeated_restore_cannot_overwrite(self):
         backup(self.report, self.zip)

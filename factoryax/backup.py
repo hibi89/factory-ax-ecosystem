@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import stat
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, BadZipFile
 
 from .delivery import ARTIFACTS, COMPLETE, RECEIPT, verify_candidate, _sha
@@ -28,8 +29,13 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
             'sha256': {name: _sha(data) for name, data in payloads.items()},
             'authorization': 'OWNER_MANUAL_ONLY', 'signature': 'UNSIGNED'}
     payloads[BACKUP_META] = (json.dumps(meta, sort_keys=True, indent=2) + '\n').encode('utf-8')
+    # Exclusive creation is not enough: a second process can win after the
+    # preflight.  NEVER unlink a winner's existing archive on FileExistsError.
+    created_identity = None
     try:
         with target.open('xb') as output:
+            created_stat = os.fstat(output.fileno())
+            created_identity = (created_stat.st_dev, created_stat.st_ino)
             with ZipFile(output, 'w', compression=ZIP_DEFLATED) as archive:
                 for name, data in sorted(payloads.items()):
                     info = ZipInfo(name, (2024, 1, 1, 0, 0, 0))
@@ -38,10 +44,17 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
             output.flush()
             os.fsync(output.fileno())
     except BaseException:
-        try:
-            target.unlink(missing_ok=True)
-        except OSError:
-            pass
+        # Delete only a partial archive created by THIS invocation.  Do not
+        # unlink a competing process's file if creation lost the race, or a
+        # path was replaced while writing.  Uncertain identity => HOLD.
+        if created_identity is not None:
+            try:
+                current = target.lstat()
+                if (stat.S_ISREG(current.st_mode) and
+                        (current.st_dev, current.st_ino) == created_identity):
+                    target.unlink()
+            except OSError:
+                pass
         raise
     return {'status': 'BACKUP_CREATED', 'sha256': _sha(target.read_bytes()), 'release': 'HOLD'}
 
