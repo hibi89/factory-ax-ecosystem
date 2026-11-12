@@ -1,3 +1,5 @@
+> 2026-11-12 W1-70 engineering checkpoint: implemented in this feature branch, 87 synthetic local tests PASS, CLI 4-stage OK; no physical Win/CI/customer, RELEASE HOLD. [Technical evidence](../VERIFY_70_EVIDENCE_20261112.md).
+
 # feature/data-verify — 기능 담당 원칙
 
 > 2026-11-12 KST · 현재 설계만, 기능 구현/CI/고객 수락 **NOT RUN** · 출시 RELEASE HOLD

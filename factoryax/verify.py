@@ -24,6 +24,7 @@ SCHEMA = 'factoryax.v0'
 ROLES = ('purchase_order', 'production', 'quality_inspection', 'shipment')
 COMMON = ('record_id', 'order_id', 'item_id', 'lot_id', 'quantity', 'unit')
 REQUIRED = {r: COMMON + (('inspection_status',) if r == 'quality_inspection' else ()) for r in ROLES}
+EXTRAS = {r: ('event_date',) + (('movement_kind',) if r in ('production', 'shipment') else ()) for r in ROLES}
 MAX_BYTES = 5 * 1024 * 1024
 MAX_ROWS = 10000
 MAX_COLS = 80
@@ -196,7 +197,7 @@ def _as_records(data, extension, mapping, role, source_id, findings):
     headers = rows[0][1]
     if not headers or len(headers) != len(set(headers)) or any(not h or not h.strip() for h in headers):
         raise IntakeError('HEADERS_INVALID')
-    if set(mapping) != set(REQUIRED[role]) or any(not isinstance(v, str) or v not in headers for v in mapping.values()):
+    if not set(REQUIRED[role]).issubset(mapping) or not set(mapping).issubset(set(REQUIRED[role]) | set(EXTRAS[role])) or any(not isinstance(v, str) or v not in headers for v in mapping.values()):
         raise IntakeError('MAPPING_UNAPPROVED_OR_MISSING')
     if len(set(mapping.values())) != len(mapping.values()):
         raise IntakeError('MAPPING_DUPLICATE_COLUMN')
@@ -294,12 +295,21 @@ def verify(spec):
             key = (rec['order_id'], rec['item_id'], rec['lot_id'])
             if all(key) and key not in ordered:
                 findings.append(_finding('ORPHAN_ORDER_ITEM_LOT', role, rec['_row']))
+    reconciliation = None
+    if 'reconciliation_policy' in spec:
+        from .reconcile import ReconciliationError, reconcile
+        try:
+            extra_findings, reconciliation = reconcile(spec, records, units)
+        except ReconciliationError as exc:
+            raise IntakeError(str(exc)) from exc
+        findings.extend(extra_findings)
     report = {'schema_version': SCHEMA, 'product': 'Factory AX VERIFY',
-              'scope': 'W1-50: input integrity + quality checks only; NOT full four-stage reconciliation',
+              'scope': ('W1-70: conservative four-stage reconciliation' if reconciliation else 'W1-50: input integrity + quality checks only; NOT full four-stage reconciliation'),
               'status': 'REVIEW_REQUIRED' if findings else 'OK',
               'profile_version': spec['profile_version'], 'rule_set_version': spec['rule_set_version'],
               'created_at_utc': datetime.now(timezone.utc).isoformat(),
               'manifests': manifests, 'record_counts': {r: len(records[r]) for r in ROLES},
+              'reconciliation': reconciliation,
               'findings': findings, 'quality_rule_families': ['required', 'uniqueness', 'unit_and_decimal', 'reference_integrity', 'inspection_status']}
     return report
 
@@ -325,7 +335,7 @@ def export_new(report, out):
                     '<title>Factory AX VERIFY - 합성/승인 자료 검수</title><style>body{font:16px system-ui;'
                     'max-width:960px;margin:3rem auto;padding:1rem}td,th{border-bottom:1px solid #aaa;'
                     'padding:10px;text-align:left;overflow-wrap:anywhere}table{width:100%}</style><h1>Factory AX VERIFY</h1>'
-                    '<p>기본 입력 품질 검사만 수행합니다. 제품 적합/품질 인증이 아닙니다.</p><p>결과: <strong>' +
+                    '<p>승인된 범위의 제한적 입력·대사 검수입니다. 제품 적합/품질 인증이 아닙니다.</p><p>결과: <strong>' +
                     html.escape(report['status']) + '</strong>; 추가 확인 항목: ' + str(len(report['findings'])) +
                     '</p><table><thead><tr><th>유형</th><th>행</th><th>SHA-256</th></tr></thead><tbody>' + rows +
                     '</tbody></table><p>근거 상세는 내부 제한 보관 result.json을 확인하세요. 원본 값은 이 보고서에 포함하지 않습니다.</p></html>')

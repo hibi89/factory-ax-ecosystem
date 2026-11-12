@@ -1,3 +1,5 @@
+> **2026-11-12 KST VERIFIED ENGINEERING UPDATE:** First product Factory AX VERIFY **W1 70% provisional**; Linux local 87 PASS, source-linked four-stage conservative prototype and supplier draft UI. **Whole Factory ecosystem UNASSESSED**. No native Windows/customer/real release, **RELEASE HOLD**. See [VERIFY W1-70 evidence](docs/VERIFY_70_EVIDENCE_20261112.md) and [usage](VERIFY_README.md).
+
 > **feature/data-verify 2026-11-12:** First executable Factory VERIFY **W1 50% provisional engineering** milestone, limited synthetic CSV/XLSX quality and reports. Original main design-only baseline preserved, entire Factory Ecosystem **UNASSESSED**, commercial **RELEASE HOLD**. See [VERIFY_README.md](VERIFY_README.md) and [checkpoint evidence](docs/VERIFY_50_EVIDENCE_20261112.md).
 
 # Factory AX Ecosystem

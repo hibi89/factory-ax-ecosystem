@@ -15,3 +15,20 @@ python -m unittest discover -s tests -q
 Exit 0 = `OK` only for limited input-quality rules; exit 2 = `REVIEW_REQUIRED`; exit 3 = `BLOCKED` (no output). Existing output paths are rejected. Supported CSV UTF-8 BOM or no BOM and formula-free restricted XLSX with one visible sheet. The role-specific mapping requires `record_id`, `order_id`, `item_id`, `lot_id`, `quantity`, `unit`, and `inspection_status` on quality files. `approved_units` requires explicit symbols such as `EA`. No auto-conversion. Source files are never modified.
 
 Synthetic examples can be shared; **do not commit real customer files, credentials or internal folders**. Original PREP/EAI files are not bundled. Documented source/permission/RACE/XLSX limitations and next-stage requirements: `docs/VERIFY_50_EVIDENCE_20261112.md`.
+
+
+## W1 70%-stage conservative four-stage reconciliation (provisional)
+
+This stage is **not** a 70% complete Factory AX Ecosystem, industrial quality certification, or commercial release.
+
+```sh
+python examples/make_reconcile_synthetic.py /absolute/new/factory-demo
+python -m factoryax --spec /absolute/new/factory-demo/approved.json --output /absolute/new/factory-demo/review-new
+python -m unittest discover -s tests -q
+```
+
+The v0 optional `reconciliation_policy` makes four-stage reconciliation mandatory; without it, the CLI still provides its previous W1-50 quality-only checks (the unchanged legacy behavior is not W1-70 completion). The 70-stage policy requires explicit `approved_by`, date boundaries, bool rules, a capped Decimal tolerance, and `event_date` on every role plus `movement_kind` for production/shipment. It is a self-declared business-rule acknowledgement, **not** an authenticated approval or digital signature. No automatic unit conversion. Only supported `NEW/REWORK`, `SHIP/RETURN` and `PASS/FAIL/REVIEW` are accepted. Unclear ordering, later inspections, invalid/early returns, missing lots, and overages are held for review. Quantity totals use Decimal (no float), source row citations exclude raw field values.
+
+Supplier policy draft UI is the standalone local `web/supplier_profile.html` (no upload/server/CDN; it only displays a draft JSON with `approved_by:null`). The actual approved mapping, SHA receipts, and input files are separate, locally controlled by the operator; drafts cannot be executed as approved policies.
+
+**Limits:** current policy does not model BOM, exchanges, multi-plant/warehouse, all ERP date conventions, per-piece quality disposition, returned inventory resale, time-of-day same-day sequencing, role/actor authentication, or physical Win/SMB security. No real customers or external secrets were used. Full test/QA evidence: `docs/VERIFY_70_EVIDENCE_20261112.md`. `RELEASE HOLD`.

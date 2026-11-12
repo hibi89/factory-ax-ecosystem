@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'; img-src 'none'">
+<title>Factory AX VERIFY — 공급자 정책 초안</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}body{max-width:840px;margin:2rem auto;padding:0 1rem;background:#111827;color:#f3f4f6}
+header{border-bottom:1px solid #374151;padding-bottom:1rem;margin-bottom:1.5rem}h1{font-size:1.6rem}h2{font-size:1.1rem}
+label{display:block;margin:12px 0;color:#e5e7eb}input:not([type=checkbox]){display:block;width:100%;padding:.6rem;border-radius:6px;border:1px solid #6b7280;background:#1f2937;color:white;font:inherit;box-sizing:border-box}
+fieldset{border:1px solid #4b5563;border-radius:10px;padding:1rem;margin:1rem 0}fieldset label{display:flex;align-items:center;gap:8px}
+button{border:0;border-radius:6px;background:#2563eb;color:#fff;padding:12px 18px;font-weight:700;cursor:pointer;margin:12px 0}
+pre{border:1px solid #374151;border-radius:8px;padding:1rem;background:#030712;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.notice{border-left:4px solid #f59e0b;padding:.7rem 1rem;background:#2d2413;color:#fef3c7}small{color:#aeb7c4}
+</style></head><body><header><h1>Factory AX VERIFY · 공급자 정책 편집기</h1>
+<p>오프라인 초안 생성 전용. 자동 승인·고객 데이터 조회·외부 업로드가 없습니다.</p></header>
+<p class="notice">이 화면에서 생성한 정책은 <strong>DRAFT</strong>입니다. 내부 승인 절차, 파일별 SHA·컬럼 매핑·담당자 승인 후 검수기에 별도로 등록해야 합니다. 고객 파일/보안정보를 입력하지 마세요.</p>
+<section aria-label="정책 정보"><h2>1. 합성 또는 허가된 업무 정책</h2>
+<label for="policyId">정책 식별자(비밀 제외)</label><input id="policyId" value="DEMO-01" maxlength="64" pattern="[A-Za-z0-9._-]{1,64}">
+<label for="version">정책 버전</label><input id="version" value="1.0.0" maxlength="64" pattern="[A-Za-z0-9._-]{1,64}">
+<label for="from">자료 시작일</label><input type="date" id="from" value="2026-11-01">
+<label for="to">자료 종료일</label><input type="date" id="to" value="2026-11-30">
+<label for="tolerance">수량 허용 오차 (0~0.000001)</label><input id="tolerance" type="number" min="0" max="0.000001" step="0.000001" value="0">
+<fieldset><legend>업무 정책 (명시 허용만 활성화)</legend>
+<label><input type="checkbox" id="partialProduction">부분 생산 허용</label>
+<label><input type="checkbox" id="partialInspection">부분 검사 허용</label>
+<label><input type="checkbox" id="partialShipment">부분 출하 허용</label>
+<label><input type="checkbox" id="returns">반품 허용</label>
+<label><input type="checkbox" id="rework">재작업 허용 (신규 생산량으로 가산하지 않음)</label></fieldset>
+<button id="draft" type="button">초안 생성 및 검토</button></section>
+<section aria-label="생성 결과"><h2>2. 정책 JSON 초안</h2>
+<p id="message" role="status">파일 전송 없이 현재 페이지에서만 생성합니다.</p>
+<pre id="result" aria-live="polite">정책 내용을 설정하고 위 버튼을 누르세요.</pre>
+<small>승인자는 자동 생성되지 않습니다. 승인 필드는 null이므로 실제 엔진에 바로 적용되지 않습니다. 생성 내용은 기기 내 임시 화면에만 표시됩니다.</small></section>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+$('draft').addEventListener('click', () => {
+  const id=$('policyId').value.trim(), version=$('version').value.trim();
+  const start=$('from').value, end=$('to').value, tolerance=$('tolerance').value;
+  const valid=/^[A-Za-z0-9._-]{1,64}$/;
+  if (!valid.test(id) || !valid.test(version) || !/^\d{4}-\d{2}-\d{2}$/.test(start) ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(end) || start>end ||
+      (new Date(end+'T00:00:00Z') - new Date(start+'T00:00:00Z'))>366*86400000 ||
+      tolerance==='' || !Number.isFinite(Number(tolerance)) || Number(tolerance)<0 || Number(tolerance)>.000001) {
+    $('result').textContent=''; $('message').textContent='입력값 또는 기간/허용 오차가 잘못되었습니다. 재검토하세요.'; return;
+  }
+  const policy={policy_id:id,policy_version:version,approved_by:null,period_start:start,period_end:end,
+    allow_partial_production:$('partialProduction').checked,allow_partial_inspection:$('partialInspection').checked,
+    allow_partial_shipment:$('partialShipment').checked,allow_returns:$('returns').checked,
+    allow_rework:$('rework').checked,quantity_tolerance:tolerance};
+  $('result').textContent=JSON.stringify({state:'DRAFT_NOT_APPROVED',reconciliation_policy:policy},null,2);
+  $('message').textContent='초안 생성 완료. 실제 실행 승인·원본 SHA·열 매핑은 별도로 확인해야 합니다.';
+});
+</script></body></html>

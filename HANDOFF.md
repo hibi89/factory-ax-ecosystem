@@ -1,3 +1,17 @@
+# 2026-11-12 KST — Factory VERIFY W1-70 engineering handoff (ten-point current)
+1. **Goal:** first product W1 VERIFY, not W2–W4 overall ecosystem, 70% provisional target per `docs/ACCEPTANCE_MATRIX.md`.
+2. **Done:** standalone Python3.11+ offline four-stage reconciling with approved policy, source/line references, Decimal quantities, 1:N, partial, approved return/rework, strict periods/causal daily rule, source-free HTML/CSV/JSON, supplier profile draft HTML. Existing W1-50 code/regression preserved; no PREP/EAI proprietary sources copied.
+3. **Test:** Linux Python3.13.5 exact local content **87 unittest PASS /0 FAIL/0 SKIP**; compileall PASS; invented four CSV CLI OK, SHA+output check, negative-review/block tests. Chromium `set_content` policy draft/default/check/date negative **3 PASS**, JS errors0, network0. `file://` browser denied, direct Windows/CI not run.
+4. **Current:** **W1 VERIFY 70% provisional engineering** / overall Factory **UNASSESSED**, W2–W4 not built, RELEASE HOLD, no actual buyer.
+5. **Failure/limits/pivot:** direct `file://` ERR_BLOCKED_BY_ADMINISTRATOR; same-source browser injection as bounded evidence, not real deployment. Same-day missing event time intentionally REVIEW; true role authentication, atomic 4-file snapshot, approval signatures, full BOM/ERP, native Windows missing. No unsafe retries.
+6. **Repo/ref/source:** `hibi89/factory-ax-ecosystem@feature/data-verify`; tested `factoryax/verify.py` blob d223747b600958c142f80ac7563c0fb2c4dcbf4a and `factoryax/reconcile.py` blob 50087c130b96a6f47451c5dd062dd027d9a7cc60. Final branch HEAD read after commit. Main baseline untouched. Scope doc `docs/VERIFY_70_EVIDENCE_20261112.md`.
+7. **Runtime/production:** `python -m unittest discover -s tests -q`, `python examples/make_reconcile_synthetic.py /absolute/new/demo`, `python -m factoryax --spec /absolute/new/demo/approved.json --output /absolute/new/demo/review`. Production/Vercel/Cloudflare N/A.
+8. **Source/backup/security:** Private existing user repo and all original PREP/EAI/SMAX/HAE etc unchanged, no customer input, tokens, rights, payment or account settings. Revert feature commit or inspect previous SHA; no force-push.
+9. **Next:** verify new GitHub blobs and fresh HEAD; improve native Windows/clean CI, real approval and atomic multi-file source, packager, network/ACL and customer UX, only then W1 85%; customer deployment/commercial approval requires owner consent.
+10. **Timestamp/scope:** 2026-11-12 KST, Linux synthetic only, browser injected not direct real deployment; verified GitHub object hashes, final branch commit must be queried. No release claim.
+
+---
+
 # 2026-11-12 KST — Factory VERIFY W1-50 feature development handoff (latest)
 
 1. **Goal/requirements:** Follow unchanged Factory total W1–W4 blueprint; current W1 CORE+VERIFY 50% *provisional* engineering acceptance only, not whole Factory. Four approved input roles, read-only intake, quality, SHA/row evidence and new report; RELEASE HOLD.
