@@ -341,8 +341,8 @@ def export_new(report, out):
                     '</tbody></table><p>근거 상세는 내부 제한 보관 result.json을 확인하세요. 원본 값은 이 보고서에 포함하지 않습니다.</p></html>')
         (stage / 'summary.html').write_text(out_html, encoding='utf-8')
         for name in ('result.json', 'summary.csv', 'summary.html'):
-            with (stage / name).open('rb') as stream:
-                os.fsync(stream.fileno())
+            with (stage / name).open('r+b') as stream:
+                os.fsync(stream.fileno())  # Windows _commit needs a writable handle.
         os.rename(stage, out)  # destination must not preexist; platform-specific concurrent race remains.
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)

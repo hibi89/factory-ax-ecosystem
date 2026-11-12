@@ -105,8 +105,8 @@ def export_candidate(report: dict, out: str | Path, *, spec: dict | None = None)
         complete_digest = _sha(receipt_data)
         (scratch / COMPLETE).write_text(complete_digest + '\n', encoding='ascii')
         for f in (scratch / RECEIPT, scratch / COMPLETE):
-            with f.open('rb') as stream:
-                os.fsync(stream.fileno())
+            with f.open('r+b') as stream:
+                os.fsync(stream.fileno())  # Windows _commit needs a writable handle.
         if spec is not None:
             _source_recheck(spec, report)
         # Atomic exclusive reservation even if an unrelated process wins the path race.
