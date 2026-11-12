@@ -35,6 +35,19 @@ class BackupTests(unittest.TestCase):
         self.zip = self.root / 'safe.zip'
         self.restored = self.root / 'restored'
 
+    def test_complete_marker_is_lf_on_all_platforms(self):
+        import hashlib
+        expected = hashlib.sha256((self.report / 'receipt.json').read_bytes()).hexdigest().encode('ascii') + b'\n'
+        self.assertEqual((self.report / 'COMPLETE.sha256').read_bytes(), expected)
+
+    def test_backup_accepts_legacy_windows_crlf_marker(self):
+        # Old Windows text-mode write_text converted the exact marker's LF to CRLF.
+        marker = self.report / 'COMPLETE.sha256'
+        marker.write_bytes(marker.read_bytes().rstrip(b'\r\n') + b'\r\n')
+        self.assertEqual(verify_candidate(self.report)['status'], 'OK')
+        self.assertEqual(backup(self.report, self.zip)['status'], 'BACKUP_CREATED')
+        self.assertEqual(restore(self.zip, self.restored)['status'], 'RESTORED_AND_VERIFIED')
+
     def test_roundtrip(self):
         before = (self.report / 'result.json').read_bytes()
         receipt = backup(self.report, self.zip)

@@ -34,7 +34,7 @@ def backup(report_dir: str | Path, archive_path: str | Path) -> dict:
     try:
         receipts = json.loads(payloads[RECEIPT])
         complete = payloads[COMPLETE].decode('ascii')
-        if (complete != _sha(payloads[RECEIPT]) + '\n' or
+        if (complete not in (_sha(payloads[RECEIPT]) + '\n', _sha(payloads[RECEIPT]) + '\r\n') or
                 set(receipts['sha256']) != set(ARTIFACTS) or
                 any(_sha(payloads[name]) != receipts['sha256'][name] for name in ARTIFACTS)):
             raise IntakeError('BACKUP_SOURCE_CHANGED_DURING_CAPTURE')

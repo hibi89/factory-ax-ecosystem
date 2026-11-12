@@ -103,7 +103,7 @@ def export_candidate(report: dict, out: str | Path, *, spec: dict | None = None)
         receipt_data = (json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + '\n').encode()
         (scratch / RECEIPT).write_bytes(receipt_data)
         complete_digest = _sha(receipt_data)
-        (scratch / COMPLETE).write_text(complete_digest + '\n', encoding='ascii')
+        (scratch / COMPLETE).write_bytes((complete_digest + '\n').encode('ascii'))  # Canonical LF on Windows and Linux.
         for f in (scratch / RECEIPT, scratch / COMPLETE):
             with f.open('r+b') as stream:
                 os.fsync(stream.fileno())  # Windows _commit needs a writable handle.
