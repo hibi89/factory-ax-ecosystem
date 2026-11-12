@@ -1,5 +1,13 @@
-name: Factory AX VERIFY manual synthetic QA (no customer data)
+name: Factory AX VERIFY synthetic QA (auto Linux, manual Windows)
 on:
+  push:
+    branches: [feature/data-verify]
+    paths:
+      - 'factoryax/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'examples/**'
+      - '.github/workflows/verify-owner-qa.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -11,11 +19,13 @@ jobs:
     # Main registers the workflow; select the feature branch for actual tests.
     if: github.ref == 'refs/heads/feature/data-verify'
     timeout-minutes: 12
-    # Manual dispatch only. Do not run until private billing usage/cap is confirmed.
+    # Linux auto-push only on source changes; Windows needs owner dispatch and billing review.
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # Private-repo push events use Linux only (bounded included-minute use).
+        # Native Windows remains explicit owner dispatch until billing cap confirmed.
+        os: ${{ fromJSON(github.event_name == 'push' && '["ubuntu-latest"]' || '["ubuntu-latest","windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
