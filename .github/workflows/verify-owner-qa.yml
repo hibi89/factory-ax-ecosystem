@@ -3,9 +3,15 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: factoryax-verify-owner-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   qa:
-    # Explicit dispatch only. Do not run until owner confirms private Actions minutes/cost.
+    # Main registers the workflow; select the feature branch for actual tests.
+    if: github.ref == 'refs/heads/feature/data-verify'
+    timeout-minutes: 12
+    # Manual dispatch only. Do not run until private billing usage/cap is confirmed.
     strategy:
       fail-fast: false
       matrix:
