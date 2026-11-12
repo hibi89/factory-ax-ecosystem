@@ -1,4 +1,4 @@
-name: Factory AX VERIFY synthetic QA (auto Linux, manual Windows)
+name: Factory AX VERIFY synthetic QA (auto Linux; tagged Windows)
 on:
   push:
     branches: [feature/data-verify]
@@ -18,14 +18,15 @@ jobs:
   qa:
     # Main registers the workflow; select the feature branch for actual tests.
     if: github.ref == 'refs/heads/feature/data-verify'
-    timeout-minutes: 12
-    # Linux auto-push only on source changes; Windows needs owner dispatch and billing review.
+    timeout-minutes: 5
+    # Source push runs Linux; tagged [windows-smoke] push also runs Windows. Max five minutes per job. Private billing usage remains metered.
     strategy:
       fail-fast: false
       matrix:
         # Private-repo push events use Linux only (bounded included-minute use).
         # Native Windows remains explicit owner dispatch until billing cap confirmed.
-        os: ${{ fromJSON(github.event_name == 'push' && '["ubuntu-latest"]' || '["ubuntu-latest","windows-latest"]') }}
+        # Windows auto-runs ONLY for a commit explicitly tagged [windows-smoke]; all other pushes Linux-only.
+        os: ${{ fromJSON((github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[windows-smoke]')) && '["ubuntu-latest","windows-latest"]' || '["ubuntu-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
