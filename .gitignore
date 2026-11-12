@@ -1,0 +1,45 @@
+# Secrets / personal or customer data
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+*.p7b
+id_rsa*
+*.secret
+secrets/
+private/
+customer_data/
+real_data/
+raw/
+data/private/
+logs/private/
+# Local development / models / databases / executables
+.venv/
+venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.coverage
+dist/
+build/
+artifacts/
+output/
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.pyc
+*.exe
+*.msi
+*.msix
+*.onnx
+*.gguf
+*.safetensors
+# OS
+.DS_Store
+Thumbs.db
