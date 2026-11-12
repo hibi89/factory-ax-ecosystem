@@ -73,6 +73,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: python scripts/gui_smoke.py
+      - name: Windows PowerShell 5.1 Korean path full owner QA
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          & powershell.exe -NoProfile -File .\scripts\windows_native_qa.ps1 -GuiSmoke
+          if ($LASTEXITCODE -ne 0) { throw "Native PowerShell owner QA failed: $LASTEXITCODE" }
+          $global:LASTEXITCODE = 0
       - name: Real Tk widgets in virtual Linux display (not native Windows GUI)
         if: runner.os == 'Linux'
         shell: bash

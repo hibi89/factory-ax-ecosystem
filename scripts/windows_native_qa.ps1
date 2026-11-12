@@ -20,7 +20,8 @@ try {
         Check-Exit
         & $python @pyargs -m compileall -q factoryax tests scripts examples
         Check-Exit
-        & $python @pyargs -m unittest discover -s tests -q
+        # One process per suite avoids cross-suite stalls and refuses skipped/zero tests.
+        & $python @pyargs (Join-Path $repo 'scripts/run_ci_regressions.py') --timeout 65
         Check-Exit
         $demo = Join-Path $temp '한글_합성_자료'
         & $python @pyargs (Join-Path $repo 'examples/make_reconcile_synthetic.py') $demo
