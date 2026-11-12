@@ -1,3 +1,8 @@
+> **CURRENT 2026-11-12 W1 CHECKPOINT:** [Verified hosted Linux+Windows CI #43178583600](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43178583600) exact feature SHA `b70a059175389bf53d87f8c90dc4f5bbe6a97986`: **138/138 PASS on each OS**, build/manifest/report/backup/restore, Windows Tk widgets, CMD BLOCKED exit3, PowerShell5.1 Korean paths PASS. **W1 VERIFY 85% provisional engineering candidate accepted**; package is unsigned .pyz requiring separately installed Python3.11+Tk; no customer Windows10/11/real ERP/installer or commercial permission. **Factory AX total UNASSESSED; RELEASE HOLD**. [Evidence](docs/VERIFY_85_CI_ACCEPTANCE_20261112.md). Below are historical earlier-stage notes.
+
+
+---
+
 > **2026-11-12 current checkpoint:** W1 VERIFY **82% provisional (85 target NOT verified)**, entire Factory ecosystem UNASSESSED. Linux 117/117 synthetic unit PASS, real Linux Tk/Xvfb QA PASS, local .pyz/backup PASS; native Windows, clean Actions and customer approval NOT RUN. See [native-readiness evidence](docs/VERIFY_82_QA_NATIVE_GATES_20261112.md). All sale/release HOLD.
 
 # Factory AX VERIFY — restricted local W1 prototype

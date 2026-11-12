@@ -1,3 +1,13 @@
+## Latest verified milestone — 2026-11-12 KST (supersedes historical initial baseline below)
+| Scope | Actual source & tests | Acceptance now | Remaining |
+|---|---|---|---|
+| **W1 CORE+VERIFY first product** | Feature `b70a059175389bf53d87f8c90dc4f5bbe6a97986`; GitHub Actions #43178583600 Ubuntu+Windows SUCCESS; each **138 PASS/0 FAIL/0 SKIP**; .pyz/CMD, SHA, Tk, Korean PowerShell QA | **85% provisional engineering candidate** | 95 actual Windows10/11/customer-shaped offline/security/large-file, 100 commercial acceptance; RELEASE HOLD |
+| W2–W4 whole Factory Ecosystem | Separate source systems remain unintegrated | **UNASSESSED** | RAG/NAS/HAE/LA/Guard/SOVIA/PC CARE/Code QA/Console actual integrations |
+- The table below is **historical setup-only baseline** and not the current W1 result. No implication of completed retail installation or license verification.
+
+
+---
+
 # Factory AX 실제 완성도·검증 점수판
 > **2026-11-12 KST 초기 기준**. 이전 HAE/EAI/SMAX/기타 저장소의 70~85%는 **Factory AX 프로젝트 완성률이 아니다**.
 

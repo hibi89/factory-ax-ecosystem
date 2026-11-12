@@ -1,3 +1,14 @@
+## 2026-11-12 KST — VERIFIED hosted Windows+Linux W1 VERIFY 85% engineering candidate / RELEASE HOLD
+- Tested exact private `hibi89/factory-ax-ecosystem@feature/data-verify` commit `b70a059175389bf53d87f8c90dc4f5bbe6a97986`. GitHub Actions [#43178583600](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43178583600) = **SUCCESS**, hosted **Ubuntu + Windows Server 2025** jobs each SUCCESS.
+- On each OS: **8 isolated test suites / 138 PASS / 0 FAIL / 0 SKIP**, compileall, deterministic unsigned `.pyz`/CMD SHA manifest build+verify, fabricated 4-role CLI audit/report/backup/restore and integrity PASS. Windows additionally passed native CMD `BLOCKED=3` and unchanged report SHA; Tk real widgets; PowerShell5.1 Korean directory full synthetic QA. Linux Tk/Xvfb PASS. Actual screenshots/customer PC are not claimed.
+- Prior Windows `os.fsync` read-only-handle `Bad file descriptor` was identified in CI and resolved with a bounded Windows-compatible writable-handle fix; new Windows regression exercises it. Intermediate red runs remain historical.
+- **First product W1 CORE+VERIFY: 85% provisional *engineering* candidate milestone achieved against synthetic cross-OS acceptance gate**, not legal/commercial release and not overall Factory AX ecosystem 85%. W2–W4 NOT BUILT/UNASSESSED. **RELEASE HOLD**.
+- Product needs separately installed Python3.11+Tk; artifact unsigned `.pyz`/CMD (not signed EXE/installer). Account GitHub Actions budget still unknown. Real Windows 10/11, isolated-network/customer data/SMB/NTFS adversarial ACL+TOCTOU, large MES/Excel diversity, authentic approval, external source licenses, 95% physical acceptance and 100% customer sale all **UNVERIFIED**. See `docs/VERIFY_85_CI_ACCEPTANCE_20261112.md`.
+- Feature branch source `b70a059175389bf53d87f8c90dc4f5bbe6a97986` is exact green CI SHA, not this status-doc commit. Maintain original `main`, existing user files and other product repos unchanged. No automatic public production deploy or customer data.
+
+
+---
+
 ## 2026-11-12 KST — Automatic Linux CI is working; Windows remains manual/failed; W1 VERIFY 82% provisional
 - User continuation approved transition from repeated manual GitHub Actions to code-push CI. Retained private repo and `feature/data-verify`, limited **push** to `factoryax/**`, `tests/**`, `scripts/**`, `examples/**`, and workflow file; docs-only updates do NOT trigger. `workflow_dispatch` remains available for Windows+Linux.
 - Feature workflow commit **067139c6b9b657b3f04fc622550081ec8f22d37c** uses event-specific matrix: `push` **Linux Ubuntu only**, `workflow_dispatch` Linux+Windows. `contents:read`, `cancel-in-progress:true`, 12-minute job max, no other branch tests. Original main and functional code untouched. This does use private Actions included compute minutes and could incur charges beyond account usage; billing cap/remaining cannot be verified by connected tools. **Windows auto-run not activated**.

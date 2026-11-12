@@ -1,3 +1,8 @@
+> **CURRENT W1 VERIFY UPDATE (2026-11-12):** First-product **85% provisional engineering candidate**, exact feature `b70a059175389bf53d87f8c90dc4f5bbe6a97986`, [GitHub Windows+Linux CI #43178583600](https://github.com/hibi89/factory-ax-ecosystem/actions/runs/43178583600) both SUCCESS, each **138/138 PASS**. Unsigned Python3.11+Tk local QA package only, not commercial release. W2–W4 whole ecosystem **UNASSESSED**, RELEASE HOLD. [Current acceptance evidence](docs/VERIFY_85_CI_ACCEPTANCE_20261112.md). Older 50/70 notices below are historical.
+
+
+---
+
 > **2026-11-12 KST VERIFIED ENGINEERING UPDATE:** First product Factory AX VERIFY **W1 70% provisional**; Linux local 87 PASS, source-linked four-stage conservative prototype and supplier draft UI. **Whole Factory ecosystem UNASSESSED**. No native Windows/customer/real release, **RELEASE HOLD**. See [VERIFY W1-70 evidence](docs/VERIFY_70_EVIDENCE_20261112.md) and [usage](VERIFY_README.md).
 
 > **feature/data-verify 2026-11-12:** First executable Factory VERIFY **W1 50% provisional engineering** milestone, limited synthetic CSV/XLSX quality and reports. Original main design-only baseline preserved, entire Factory Ecosystem **UNASSESSED**, commercial **RELEASE HOLD**. See [VERIFY_README.md](VERIFY_README.md) and [checkpoint evidence](docs/VERIFY_50_EVIDENCE_20261112.md).
