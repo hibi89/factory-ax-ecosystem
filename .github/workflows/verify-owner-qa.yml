@@ -57,6 +57,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          # A BLOCKED exit=3 is expected on the next invocation, not a CI failure.
+          $PSNativeCommandUseErrorActionPreference = $false
           & .\owner-qa-bundle\RUN_VERIFY_WINDOWS.cmd --verify-report owner-qa-report
           if ($LASTEXITCODE -ne 0) { throw "Windows CMD verify exit code: $LASTEXITCODE" }
           $before = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
@@ -64,6 +66,9 @@ jobs:
           if ($LASTEXITCODE -ne 3) { throw "Windows CMD blocked exit should be 3, actual: $LASTEXITCODE" }
           $after = (Get-FileHash -Algorithm SHA256 owner-qa-report/result.json).Hash
           if ($before -ne $after) { throw "Blocked run modified existing report" }
+          # GitHub's pwsh wrapper exits using the LAST native exit code. Consume
+          # the expected BLOCKED=3 only after validating code and unchanged SHA.
+          $global:LASTEXITCODE = 0
       - name: Native Windows Tk synthetic GUI widgets
         if: runner.os == 'Windows'
         shell: bash

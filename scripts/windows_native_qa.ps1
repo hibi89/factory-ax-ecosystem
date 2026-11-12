@@ -42,6 +42,7 @@ try {
         & $python @pyargs (Join-Path $repo 'scripts/build_candidate.py') --output $candidate --verify
         Check-Exit
         $cmd = Join-Path $candidate 'RUN_VERIFY_WINDOWS.cmd'
+        $PSNativeCommandUseErrorActionPreference = $false
         & $cmd --verify-report $restored
         Check-Exit
         # Windows .cmd must propagate BLOCKED exit=3; otherwise CI can report a false OK.
@@ -50,6 +51,9 @@ try {
         if ($LASTEXITCODE -ne 3) { throw "Blocked output must exit 3, saw $LASTEXITCODE" }
         $resultHashAfter = (Get-FileHash -LiteralPath (Join-Path $report 'result.json') -Algorithm SHA256).Hash
         if ($resultHashBefore -ne $resultHashAfter) { throw 'Blocked run modified an existing report' }
+        # Clear expected BLOCKED=3 after assertions; otherwise pwsh may exit 3
+        # even though this test passed and no existing report was modified.
+        $global:LASTEXITCODE = 0
         if ($GuiSmoke) {
             & $python @pyargs (Join-Path $repo 'scripts/gui_smoke.py')
             Check-Exit
