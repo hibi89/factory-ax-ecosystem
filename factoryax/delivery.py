@@ -137,7 +137,9 @@ def verify_candidate(out: str | Path) -> dict:
     except (UnicodeError, ValueError, TypeError) as exc:
         raise IntakeError('REPORT_INVALID_JSON') from exc
     if (not isinstance(receipt, dict) or receipt.get('schema_version') != SCHEMA or
-        set(receipt.get('sha256', {})) != set(ARTIFACTS) or
+        not isinstance(receipt.get('sha256'), dict) or
+        set(receipt['sha256']) != set(ARTIFACTS) or
+        any(not isinstance(receipt['sha256'][name], str) for name in ARTIFACTS) or
         receipt.get('release') != 'HOLD'):
         raise IntakeError('REPORT_RECEIPT_INVALID')
     for name in ARTIFACTS:
@@ -147,8 +149,10 @@ def verify_candidate(out: str | Path) -> dict:
         report = json.loads((out / 'result.json').read_text(encoding='utf-8'))
     except (UnicodeError, ValueError, TypeError) as exc:
         raise IntakeError('REPORT_INVALID_JSON') from exc
-    if (receipt.get('status') != report.get('status') or
-            receipt.get('source_manifest_sha256') != _sha(json.dumps(report.get('manifests'), sort_keys=True).encode())):
+    if (not isinstance(report, dict) or report.get('status') not in ('OK', 'REVIEW_REQUIRED') or
+            not isinstance(report.get('manifests'), list) or
+            receipt.get('status') != report['status'] or
+            receipt.get('source_manifest_sha256') != _sha(json.dumps(report['manifests'], sort_keys=True).encode())):
         raise IntakeError('REPORT_RECEIPT_INVALID')
     return {'status': report['status'], 'receipt_sha256': _sha(raw),
             'files': len(ARTIFACTS), 'authenticity': 'UNSIGNED', 'release': 'HOLD'}
@@ -163,8 +167,11 @@ def run(spec_path: str | Path, output: str | Path) -> dict:
         spec = json.loads(spec_bytes)
     except (UnicodeError, ValueError) as exc:
         raise IntakeError('SPEC_INVALID_JSON') from exc
+    # Validate the user-supplied JSON object before any path manipulation.
+    if not isinstance(spec, dict) or not isinstance(spec.get('approved_root'), str):
+        raise IntakeError('SPEC_SCHEMA_INVALID')
     # Output is always derived; do not create new directories inside input root.
-    approved_root = Path(spec.get('approved_root', '')).resolve(strict=True)
+    approved_root = Path(spec['approved_root']).resolve(strict=True)
     out_parent = Path(output).absolute().parent.resolve(strict=True)
     if os.path.commonpath((str(approved_root), str(out_parent))) == str(approved_root):
         raise IntakeError('OUTPUT_INSIDE_APPROVED_INPUT_ROOT')

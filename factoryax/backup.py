@@ -106,7 +106,8 @@ def restore(archive_path: str | Path, new_dir: str | Path) -> dict:
             raise
         raise IntakeError('BACKUP_INVALID') from exc
     if (not isinstance(meta, dict) or meta.get('schema') != 'factoryax.report.backup.v1' or
-            meta.get('release') != 'HOLD' or set(meta.get('sha256', {})) != set(BACKUP_FILES) or
+            meta.get('release') != 'HOLD' or not isinstance(meta.get('sha256'), dict) or
+            set(meta['sha256']) != set(BACKUP_FILES) or
             any(_sha(data[name]) != meta['sha256'][name] for name in BACKUP_FILES)):
         raise IntakeError('BACKUP_INTEGRITY_INVALID')
     # This is an owner-requested new location; source archive/report never modified.

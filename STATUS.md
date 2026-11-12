@@ -1,3 +1,9 @@
+## 2026-11-12 KST — W1 VERIFY malformed JSON fail-closed hardening (82% maintained)
+- Real input-contract issue: approved spec [] and malformed report/receipt/backup JSON shape could cause unhandled Python exceptions instead of BLOCKED. Added structural checks and four CLI negative tests expecting exit3, no traceback and no unwanted output.
+- Linux Python3.13.5 targeted 4 PASS; complete verbose suite 124 PASS/0 FAIL/0 SKIP (34.928s); compileall PASS; .pyz package build and integrity verifier PASS. Initial combined runner wrapper timed out; separate verbose diagnostic run completed OK.
+- Default-branch manual CI previously registered with approval; GitHub Actions 0 hosted runs; account billing/Windows native not inspected. No paid CI execution or product main changes.
+- VERIFY W1 82% provisional, 85% NOT accepted; whole Factory ecosystem UNASSESSED, all releases HOLD. Baseline feature SHA 001e9f2f5c3c14a4904cfda90c64aa8835a13d6c, latest SHA from GitHub ref after commit. Evidence docs/VERIFY_82_MALFORMED_FAILCLOSED_20261112.md.
+
 ## 2026-11-12 KST — Owner-approved manual QA registration, hosted CI NOT RUN
 - Explicit approval received to register the manual-only QA workflow on default `main`. Workflows on `main` and `feature/data-verify` now use `workflow_dispatch` exclusively, read-only `contents` permission, a `feature/data-verify` job guard, 12-minute per-job timeout, and cancel-in-progress concurrency. Workflow is synthetic-only; no production or customer data.
 - `main` workflow registration SHA **f54b74ebc5bd838c2305ae18672750fbad87ba4b**; feature workflow update SHA **f6915c12aba6b02280029d74eac8e5778844d560**. The existing functional feature code SHA **0c3f1cb9d610ae90a7d1f132a985e7636becfca1** and the default baseline functional documents were not merged/replaced.

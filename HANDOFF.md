@@ -1,3 +1,15 @@
+# 2026-11-12 KST — Factory W1 VERIFY malformed input safety handoff
+1. Goal: W1 VERIFY 85% target; 82% provisional currently; whole Factory ecosystem UNASSESSED.
+2. Done: Kept original code and four-role reconciliation; type-guarded untrusted JSON in delivery/report/backup; four CLI cases return BLOCKED=3 without traceback.
+3. Tests: Linux Python3.13.5 targeted 4 PASS and complete 124/124 PASS (34.928s), compileall and deterministic .pyz build/verify PASS. An initial combined runner wrapper timeout was resolved by a separate verbose diagnostic run with complete OK log.
+4. Status: Hosted CI 0 runs and native Windows NOT RUN; real customer, signed package, owner authorization and commercial rights unverified. W1 82% provisional, 85 gate not accepted, RELEASE HOLD.
+5. Error/recovery: Untrusted JSON array/numeric hash fields escaped assumed types. Fix explicit guards. No changes to customer data or original upstream repositories; do not misrepresent Linux tests as Windows evidence.
+6. Repo/ref: Private hibi89/factory-ax-ecosystem branch feature/data-verify; previous SHA 001e9f2f5c3c14a4904cfda90c64aa8835a13d6c; new HEAD must be queried. Changed factoryax/delivery.py, backup.py, new tests/test_malformed_rejection.py and docs/VERIFY_82_MALFORMED_FAILCLOSED_20261112.md. Rollback via Git history; no force.
+7. Production/runtime: Python3.11+ stdlib; python -m unittest discover -s tests -q; python scripts/build_candidate.py --output NEW_DIR. No Production/Vercel URL.
+8. Security: No customer files/credentials, outside services, paid runs, policy changes or third-party source copying. main workflow registration and other branches/repos unchanged.
+9. Next: After owner's GitHub billing/quota check, manual workflow dispatch on feature/data-verify followed by Windows/Linux SHA-bound logs, native user PC GUI/NTFS/Defender and rights audit before 85 acceptance.
+10. Date/coverage: 2026-11-12 KST; GitHub exact source hashes, Linux synthetic only; no native or customer proof. See docs/VERIFY_82_MALFORMED_FAILCLOSED_20261112.md.
+
 # 2026-11-12 KST — Owner-approved default-branch manual CI registration (10-point handoff)
 1. **Goal:** Factory W1 VERIFY target 85; current first-product 82% provisional and whole ecosystem UNASSESSED.
 2. **Change:** With explicit owner approval added `.github/workflows/verify-owner-qa.yml` to `main` and updated its copy on `feature/data-verify`; manual-only, synthetic Ubuntu/Windows matrix, contents read only, target feature branch guard, 12-minute timeout and in-progress cancellation. **No** automatic trigger or functional merge.
